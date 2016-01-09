@@ -12,12 +12,23 @@
 		4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1804321C3DF496000E1FF2 /* Errors.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		4A2988BB1C41A838001DF149 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4A2988A71C41A837001DF149;
+			remoteInfo = ID3EditTester;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		4A1804001C3DED53000E1FF2 /* ID3Edit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ID3Edit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A1804031C3DED53000E1FF2 /* ID3Edit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ID3Edit.h; sourceTree = "<group>"; };
 		4A1804051C3DED53000E1FF2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP3File.swift; sourceTree = "<group>"; };
 		4A1804321C3DF496000E1FF2 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ID3EditTester.xcodeproj; path = ID3EditTester/ID3EditTester.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -34,6 +45,7 @@
 		4A1803F61C3DED52000E1FF2 = {
 			isa = PBXGroup;
 			children = (
+				4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */,
 				4A1804021C3DED53000E1FF2 /* ID3Edit */,
 				4A1804011C3DED53000E1FF2 /* Products */,
 			);
@@ -56,6 +68,14 @@
 				4A1804321C3DF496000E1FF2 /* Errors.swift */,
 			);
 			path = ID3Edit;
+			sourceTree = "<group>";
+		};
+		4A2988B81C41A837001DF149 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				4A2988BC1C41A838001DF149 /* ID3EditTester.app */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -115,12 +135,28 @@
 			mainGroup = 4A1803F61C3DED52000E1FF2;
 			productRefGroup = 4A1804011C3DED53000E1FF2 /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 4A2988B81C41A837001DF149 /* Products */;
+					ProjectRef = 4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				4A1803FF1C3DED52000E1FF2 /* ID3Edit */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		4A2988BC1C41A838001DF149 /* ID3EditTester.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = ID3EditTester.app;
+			remoteRef = 4A2988BB1C41A838001DF149 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		4A1803FE1C3DED52000E1FF2 /* Resources */ = {

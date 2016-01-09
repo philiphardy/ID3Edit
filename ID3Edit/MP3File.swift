@@ -24,17 +24,28 @@ public class MP3File
     
     typealias Byte = UInt8
     
+    // MARK: - Constants
+    private let TAG_OFFSET = 10
+    private let FRAME_OFFSET = 6
+    private let ART_FRAME_OFFSET = 12
+    private let LYRICS_FRAME_OFFSET = 11
+    private struct FRAMES
+    {
+        static let ARTIST: [Byte] = [0x54, 0x50, 0x31]
+        static let TITLE: [Byte] = [0x54, 0x54, 0x32]
+        static let ALBUM: [Byte] = [0x54, 0x41, 0x4C]
+        static let LYRICS: [Byte] = [0x55, 0x4C, 0x54]
+        static let ARTWORK: [Byte] = [0x50, 0x49, 0x43]
+        static let HEADER: [Byte] = [0x49, 0x44, 0x33, 0x02, 0x00, 0x00]
+    }
+    
+    // MARK: - Instance Variables
     private let path: String
     private var data: NSData?
-    private let lyricsFrameOffset = 11
-    private let tagOffset = 10
-    private let frameOffset = 6
-    private let artFrameOffset = 12
-    private var songInfo = ["", "", "", ""] // Artist, Title, Album, Lyrics
-    private let padding = 2
+    private var songInfo = ["artist": "", "title": "", "album": "", "lyrics": ""] // Artist, Title, Album, Lyrics
     private var art: NSData?
     private var isPNG: Bool?
-    private var isCorrectVersion: Bool?
+    
     
     
     public init(path: String, overwrite: Bool = false) throws
@@ -64,15 +75,7 @@ public class MP3File
     }
     
     
-    private func analyzeData()
-    {
-        if isTagPresent() && isCorrectVersion!
-        {
-            // Loop through frames until reach the end of the tag
-            extractInfoFromFrames(getTagSize())
-        }
-    }
-    
+    // MARK: - Accessor Methods
     
     /**
      Returns the artwork for this file
@@ -96,7 +99,7 @@ public class MP3File
      */
     public func getArtist() -> String
     {
-        return getSongInfo(0)
+        return songInfo["artist"]!
     }
     
     
@@ -107,7 +110,7 @@ public class MP3File
      */
     public func getTitle() -> String
     {
-        return getSongInfo(1)
+        return songInfo["title"]!
     }
     
     
@@ -118,7 +121,7 @@ public class MP3File
     */
     public func getAlbum() -> String
     {
-        return getSongInfo(2)
+        return songInfo["album"]!
     }
     
     
@@ -129,12 +132,11 @@ public class MP3File
      */
     public func getLyrics() -> String
     {
-        return getSongInfo(3)
+        return songInfo["lyrics"]!
     }
-    private func getSongInfo(index: Int) -> String
-    {
-        return songInfo[index]
-    }
+    
+    
+    // MARK: - Mutator Methods
     
     
     /**
@@ -144,7 +146,7 @@ public class MP3File
      */
     public func setArtist(artist: String)
     {
-        setSongInfo(artist, index: 0)
+        songInfo["artist"] = artist
     }
     
     
@@ -155,7 +157,7 @@ public class MP3File
      */
     public func setTitle(title: String)
     {
-        setSongInfo(title, index: 1)
+        songInfo["title"] = title
     }
     
     
@@ -166,7 +168,7 @@ public class MP3File
      */
     public func setAlbum(album: String)
     {
-        setSongInfo(album, index: 2)
+        songInfo["album"] = album
     }
     
     
@@ -177,13 +179,7 @@ public class MP3File
      */
     public func setLyrics(lyrics: String)
     {
-        setSongInfo(lyrics, index: 3)
-    }
-    
-    
-    private func setSongInfo(info: String, index: Int)
-    {
-        songInfo[index] = info
+        songInfo["lyrics"] = lyrics
     }
     
     
@@ -213,10 +209,306 @@ public class MP3File
     }
     
     
+    // MARK: - Tag Creation Methods
+    
+    /**
+     Writes the new tag to the file
+     
+     - Returns: `true` if writes successfully, `false` otherwise
+     */
+    public func writeTag() -> Bool
+    {
+        // Make the frames
+        
+        var content: [Byte] = []
+        
+        if infoExists("artist")
+        {
+            // Create the artist frame
+            let frame = createFrame(FRAMES.ARTIST, str: getArtist())
+            content.appendContentsOf(frame)
+        }
+        
+        if infoExists("title")
+        {
+            // Create the title frame
+            let frame = createFrame(FRAMES.TITLE, str: getTitle())
+            content.appendContentsOf(frame)
+        }
+        
+        if infoExists("album")
+        {
+            // Create the album frame
+            let frame = createFrame(FRAMES.ALBUM, str: getAlbum())
+            content.appendContentsOf(frame)
+        }
+        
+        if infoExists("lyrics")
+        {
+            // Create the lyrics frame
+            let frame = createLyricFrame()
+            content.appendContentsOf(frame)
+        }
+        
+        if art != nil
+        {
+            // Create the artwork frame
+            let frame = createArtFrame()
+            content.appendContentsOf(frame)
+        }
+        
+        if content.count == 0
+        {
+            // Prevent writing if there is no data
+            return false
+        }
+        
+        // Make the tag header
+        let header = createTagHeader(content.count)
+        
+        // Form the binary data
+        let newData = NSMutableData(bytes: header, length: header.count)
+        newData.appendBytes(content, length: content.count)
+        
+        var tagSize: Int
+        
+        if isTagPresent().present
+        {
+            tagSize = getTagSize() + TAG_OFFSET
+        }
+        else
+        {
+            tagSize = 0
+        }
+        
+        let music = data!.bytes + tagSize
+        newData.appendBytes(music, length: data!.length - tagSize)
+        
+        // Write the tag to the file
+        if newData.writeToFile(path, atomically: true)
+        {
+            return true
+        }
+        else
+        {
+            return false
+        }
+    }
+    
+    
+    private func createFrame(frame: [Byte], str: String) -> [Byte]
+    {
+        var bytes: [Byte] = frame
+        
+        var cont = [Byte](str.utf8)
+        
+        if cont[0] != 0
+        {
+            // Add padding to the beginning
+            cont.insert(0, atIndex: 0)
+        }
+        
+        if cont.last != 0
+        {
+            // Add padding to the end
+            cont.append(0)
+        }
+        
+        // Add the size to the byte array
+        var size = toByteArray(UInt32(cont.count))
+        size.removeFirst()
+        
+        // Create the frame
+        bytes.appendContentsOf(size)
+        bytes.appendContentsOf(cont)
+        
+        // Return the completed frame
+        return bytes
+    }
+    
+    
+    private func createLyricFrame() -> [Byte]
+    {
+        var bytes: [Byte] = FRAMES.LYRICS
+        
+        let encoding: [Byte] = [0x00, 0x65, 0x6E, 0x67, 0x00]
+        
+        let content = [Byte](getLyrics().utf8)
+        
+        var size = toByteArray(UInt32(content.count + encoding.count))
+        size.removeFirst()
+        
+        // Form the header
+        bytes.appendContentsOf(size)
+        bytes.appendContentsOf(encoding)
+        bytes.appendContentsOf(content)
+        
+        return bytes
+    }
+    
+    
+    private func createTagHeader(contentSize: Int) -> [Byte]
+    {
+        var bytes: [Byte] = FRAMES.HEADER
+        
+        // Add the size to the byte array
+        let formattedSize = UInt32(calcSize(contentSize))
+        bytes.appendContentsOf(toByteArray(formattedSize))
+        
+        // Return the completed tag header
+        return bytes
+    }
+    
+    
+    private func createArtFrame() -> [Byte]
+    {
+        var bytes: [Byte] = FRAMES.ARTWORK
+        
+        // Calculate size
+        var size = toByteArray(UInt32(art!.length + 6))
+        size.removeFirst()
+        
+        bytes.appendContentsOf(size)
+        
+        // Append encoding
+        if isPNG!
+        {
+            // PNG encoding
+            bytes.appendContentsOf([0x00, 0x50, 0x4E, 0x47, 0x00 ,0x00])
+        }
+        else
+        {
+            // JPG encoding
+            bytes.appendContentsOf([0x00, 0x4A, 0x50, 0x47, 0x00 ,0x00])
+        }
+        
+        // Add artwork data
+        bytes.appendContentsOf(Array(UnsafeBufferPointer(start: UnsafePointer<Byte>(art!.bytes), count: art!.length)))
+        
+        return bytes
+    }
+    
+    private func calcSize(size: Int) -> Int
+    {
+        var bytes: [Int] = []
+        
+        for var i = 0; i < 4; i++
+        {
+            // Get the bytes from size
+            let shift = i * 8
+            let mask = 0xFF << shift
+            
+            
+            // Shift the byte down in order to use the mask
+            var byte = (size & mask) >> shift
+            
+            var oMask: Byte = 0x80
+            for var j = 0; j < i; j++
+            {
+                // Create the overflow mask
+                oMask = oMask >> 1
+                oMask += 0x80
+            }
+            
+            // The left side of the byte
+            let overflow = Byte(byte) & oMask
+            
+            // The right side of the byte
+            let untouched = Byte(byte) & ~oMask
+            
+            // Store the byte
+            byte = ((Int(overflow) << 1) + Int(untouched)) << (shift + i)
+            bytes.append(byte)
+        }
+        
+        let result = bytes[0] + bytes[1] + bytes[2] + bytes[3]
+        
+        return result
+    }
+    
+    
+    // MARK: - Tag Analysis
+    
+    private func analyzeData()
+    {
+        let tagPresent = isTagPresent()
+        if tagPresent.present && tagPresent.version
+        {
+            // Loop through frames until reach the end of the tag
+            extractInfoFromFrames(getTagSize())
+        }
+    }
+    
+    
+    private func isTagPresent() -> (present: Bool, version: Bool)
+    {
+        // Determine if a tag is present
+        let len = 4
+        let buffer = UnsafeMutablePointer<Byte>.alloc(len)
+        let header = FRAMES.HEADER
+        
+        data?.getBytes(buffer, length: len)
+        
+        var isPresent = true
+        
+        for var i = 0; i < 3; i++
+        {
+            isPresent = isPresent && (buffer[i] == header[i])
+        }
+        
+        
+        let isCorrectVersion = buffer[3] == header[3]
+        
+        buffer.dealloc(len)
+        
+        return (isPresent, isCorrectVersion)
+        
+    }
+    
+    
+    private func isUseful(frame: [Byte]) -> Bool
+    {
+        // Determine if the frame is useful
+        return isArtistFrame(frame) || isTitleFrame(frame) || isAlbumFrame(frame) || isArtworkFrame(frame) || isLyricsFrame(frame)
+    }
+    
+    
+    private func isLyricsFrame(frame: [Byte]) -> Bool
+    {
+        return frame == FRAMES.LYRICS
+    }
+    
+    
+    private func isArtistFrame(frame: [Byte]) -> Bool
+    {
+        return frame == FRAMES.ARTIST
+    }
+    
+    
+    private func isAlbumFrame(frame: [Byte]) -> Bool
+    {
+        return frame == FRAMES.ALBUM
+    }
+    
+    
+    private func isTitleFrame(frame: [Byte]) -> Bool
+    {
+        return frame == FRAMES.TITLE
+    }
+    
+    
+    private func isArtworkFrame(frame: [Byte]) -> Bool
+    {
+        return frame == FRAMES.ARTWORK
+    }
+
+    
+    // MARK: - Extraction Methods
+    
     private func extractInfoFromFrames(tagSize: Int)
     {
         // Get the tag
-        let range = NSRangeFromString("\(tagOffset) \(tagSize)")
+        let range = NSRangeFromString("\(TAG_OFFSET) \(tagSize)")
         let buffer = UnsafeMutablePointer<Byte>.alloc(tagSize)
         
         // Load the data into the buffer
@@ -252,192 +544,47 @@ public class MP3File
     }
     
     
-    /**
-     Writes the new tag to the file
-     
-     - Returns: `true` if writes successfully, `false` otherwise
-     */
-    public func writeTag() -> Bool
+    private func extractInfo(buffer: UnsafeMutablePointer<Byte>, curPos: Int, frameSize: Int, frameBytes: [Byte])
     {
-        // Make the frames
+        let curMem = buffer + curPos
         
-        var content: [Byte] = []
-        
-        if songInfo[0] != ""
+        if curMem.memory == 84
         {
-            // Create the artist frame
-            content.appendContentsOf(createFrame([84, 80, 49], str: songInfo[0]))
+            // Frame holds text content
+            let content = NSString(bytes: curMem + FRAME_OFFSET, length: frameSize - FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
+            
+            if isArtistFrame(frameBytes)
+            {
+                // Store artist
+                setArtist(content)
+            }
+            else if isTitleFrame(frameBytes)
+            {
+                // Store title
+                setTitle(content)
+            }
+            else
+            {
+                // Store album
+                setAlbum(content)
+            }
         }
-        
-        if songInfo[1] != ""
+        else if curMem.memory == 0x55
         {
-            // Create the title frame
-            content.appendContentsOf(createFrame([84, 84, 50], str: songInfo[1]))
-        }
-        
-        if songInfo[2] != ""
-        {
-            // Create the album frame
-            content.appendContentsOf(createFrame([84, 65, 76], str: songInfo[2]))
-        }
-        
-        if songInfo[3] != ""
-        {
-            // Create the lyrics frame
-            content.appendContentsOf(createLyricFrame(songInfo[3]))
-        }
-        
-        if art != nil
-        {
-            // Create the artwork frame
-            content.appendContentsOf(createArtFrame())
-        }
-        
-        if content.count == 0
-        {
-            // Prevent writing if there is no data
-            return false
-        }
-        
-        // Make the tag header
-        let header = createTagHeader(content.count)
-        
-        // Form the binary data
-        let newData = NSMutableData(bytes: header, length: header.count)
-        newData.appendBytes(content, length: content.count)
-        
-        var tagSize: Int
-        
-        if isTagPresent()
-        {
-            tagSize = getTagSize() + tagOffset
+            // Get lyrics
+            let content = NSString(bytes: curMem + LYRICS_FRAME_OFFSET, length: frameSize - LYRICS_FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
+            
+            // Store the lyrics
+            setLyrics(content)
         }
         else
         {
-            tagSize = 0
+            // Frame holds artwork
+            art = NSData(bytes: curMem + ART_FRAME_OFFSET, length: frameSize - ART_FRAME_OFFSET)
+            
+            // Set art type
+            isPNG = (buffer + 7).memory != 0x4A
         }
-        
-        let music = data!.bytes + tagSize
-        newData.appendBytes(music, length: data!.length - tagSize)
-        
-        // Write the tag to the file
-        if newData.writeToFile(path, atomically: true)
-        {
-            return true
-        }
-        else
-        {
-            return false
-        }
-    }
-    
-    
-    private func createArtFrame() -> [Byte]
-    {
-        var bytes: [Byte] = [0x50, 0x49, 0x43]
-
-        // Calculate size
-        var size = toByteArray(UInt32(art!.length + 6))
-        size.removeFirst()
-        
-        bytes.appendContentsOf(size)
-        
-        // Append encoding
-        if isPNG!
-        {
-            // PNG encoding
-            bytes.appendContentsOf([0x00, 0x50, 0x4E, 0x47, 0x00 ,0x00])
-        }
-        else
-        {
-            // JPG encoding
-            bytes.appendContentsOf([0x00, 0x4A, 0x50, 0x47, 0x00 ,0x00])
-        }
-        
-        // Add artwork data
-        bytes.appendContentsOf(Array(UnsafeBufferPointer(start: UnsafePointer<Byte>(art!.bytes), count: art!.length)))
-        
-        return bytes
-    }
-    
-    
-    private func createFrame(frame: [Byte], str: String) -> [Byte]
-    {
-        var bytes: [Byte] = frame
-        
-        var cont = [Byte](str.utf8)
-        
-        if cont[0] != 0
-        {
-            // Add padding to the beginning
-            cont.insert(0, atIndex: 0)
-        }
-        
-        if cont.last != 0
-        {
-            // Add padding to the end
-            cont.append(0)
-        }
-        
-        // Add the size to the byte array
-        var size = toByteArray(UInt32(cont.count))
-        size.removeFirst()
-        
-        // Create the frame
-        bytes.appendContentsOf(size)
-        bytes.appendContentsOf(cont)
-        
-        // Return the completed frame
-        return bytes
-    }
-    
-    
-    private func createLyricFrame(str: String) -> [Byte]
-    {
-        var bytes: [Byte] = [0x55, 0x4C, 0x54]
-        
-        let encoding: [Byte] = [0x00, 0x65, 0x6E, 0x67, 0x00]
-        
-        let content = [Byte](str.utf8)
-        
-        var size = toByteArray(UInt32(content.count + encoding.count))
-        size.removeFirst()
-        
-        // Form the header
-        bytes.appendContentsOf(size)
-        bytes.appendContentsOf(encoding)
-        bytes.appendContentsOf(content)
-        
-        return bytes
-    }
-    
-    
-    private func createTagHeader(contentSize: Int) -> [Byte]
-    {
-        var bytes: [Byte] = [73, 68, 51, 2, 0, 0]
-        
-        // Add the size to the byte array
-        let formattedSize = UInt32(calcSize(contentSize))
-        bytes.appendContentsOf(toByteArray(formattedSize))
-        
-        // Return the completed tag header
-        return bytes
-    }
-    
-    
-    private func toByteArray<T>(var num: T) -> [Byte]
-    {
-        let rev = withUnsafePointer(&num) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<Byte>($0), count: sizeof(T)))
-        }
-        
-        var cor: [Byte] = []
-        for byte in rev
-        {
-            cor.insert(byte, atIndex: 0)
-        }
-        
-        return cor
     }
     
     
@@ -447,91 +594,7 @@ public class MP3File
         let frameSize = Int(frameSizeBytes[0]) << 16 + Int(frameSizeBytes[1]) << 8 + Int(frameSizeBytes[2])
         
         // Return the frame size including the frame header
-        return frameSize + frameOffset
-    }
-    
-    
-    private func extractInfo(buffer: UnsafeMutablePointer<Byte>, curPos: Int, frameSize: Int, frameBytes: [Byte])
-    {
-        let curMem = buffer + curPos
-        
-        if curMem.memory == 84
-        {
-            // Frame holds text content
-            let content = NSString(bytes: curMem + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String
-            
-            var i: Int
-            if isArtistFrame(frameBytes)
-            {
-                // Store artist
-                i = 0
-            }
-            else if isTitleFrame(frameBytes)
-            {
-                // Store title
-                i = 1
-            }
-            else
-            {
-                // Store album
-                i = 2
-            }
-            
-            songInfo[i] = content
-        }
-        else if curMem.memory == 0x55
-        {
-            // Get lyrics
-            let content = NSString(bytes: curMem + lyricsFrameOffset, length: frameSize - lyricsFrameOffset, encoding: NSASCIIStringEncoding) as! String
-            
-            // Store the lyrics
-            songInfo[3] = content
-        }
-        else
-        {
-            // Frame holds artwork
-            art = NSData(bytes: curMem + artFrameOffset, length: frameSize - artFrameOffset)
-            
-            // Set art type
-            isPNG = (buffer + 7).memory != 0x4A
-        }
-    }
-    
-    
-    private func isUseful(frame: [Byte]) -> Bool
-    {
-        // Determine if the frame is useful
-        return isArtistFrame(frame) || isTitleFrame(frame) || isAlbumFrame(frame) || isArtworkFrame(frame) || isLyricsFrame(frame)
-    }
-    
-    
-    private func isLyricsFrame(frame: [Byte]) -> Bool
-    {
-        return frame[0] == 0x55 && frame[1] == 0x4C && frame[2] == 0x54
-    }
-    
-    
-    private func isArtistFrame(frame: [Byte]) -> Bool
-    {
-        return frame[0] == 84 && frame[1] == 80 && frame[2] == 49
-    }
-    
-    
-    private func isAlbumFrame(frame: [Byte]) -> Bool
-    {
-        return frame[0] == 84 && frame[1] == 65 && frame[2] == 76
-    }
-    
-    
-    private func isTitleFrame(frame: [Byte]) -> Bool
-    {
-        return frame[0] == 84 && frame[1] == 84 && frame[2] == 50
-    }
-    
-    
-    private func isArtworkFrame(frame: [Byte]) -> Bool
-    {
-        return frame[0] == 80 && frame[1] == 73 && frame[2] == 67
+        return frameSize + FRAME_OFFSET
     }
     
     
@@ -556,60 +619,32 @@ public class MP3File
     }
     
     
-    private func isTagPresent() -> Bool
+    // MARK: - Helper Methods
+    
+    private func infoExists(category: String) -> Bool
     {
-        // Determine if a tag is present
-        let len = 4
-        let buffer = UnsafeMutablePointer<Byte>.alloc(len)
-        
-        data?.getBytes(buffer, length: len)
-        
-        let isPresent = buffer[0] == 73 && buffer[1] == 68 && buffer[2] == 51
-        
-        isCorrectVersion = buffer[3] == 2
-        
-        buffer.dealloc(len)
-        
-        return isPresent
-        
+        return songInfo[category] != ""
     }
     
     
-    private func calcSize(size: Int) -> Int
+    private func stringToByteArray(str: String) -> [Byte]
     {
-        var bytes: [Int] = []
-        
-        for var i = 0; i < 4; i++
-        {
-            // Get the bytes from size
-            let shift = i * 8
-            let mask = 0xFF << shift
-            
-            
-            // Shift the byte down in order to use the mask
-            var byte = (size & mask) >> shift
-            
-            var oMask: Byte = 0x80
-            for var j = 0; j < i; j++
-            {
-                // Create the overflow mask
-                oMask = oMask >> 1
-                oMask += 0x80
-            }
-            
-            // The left side of the byte
-            let overflow = Byte(byte) & oMask
-        
-            // The right side of the byte
-            let untouched = Byte(byte) & ~oMask
-            
-            // Store the byte
-            byte = ((Int(overflow) << 1) + Int(untouched)) << (shift + i)
-            bytes.append(byte)
+        return [Byte](str.utf8)
+    }
+    
+    
+    private func toByteArray<T>(var num: T) -> [Byte]
+    {
+        let rev = withUnsafePointer(&num) {
+            Array(UnsafeBufferPointer(start: UnsafePointer<Byte>($0), count: sizeof(T)))
         }
         
-        let result = bytes[0] + bytes[1] + bytes[2] + bytes[3]
+        var cor: [Byte] = []
+        for byte in rev
+        {
+            cor.insert(byte, atIndex: 0)
+        }
         
-        return result
+        return cor
     }
 }
