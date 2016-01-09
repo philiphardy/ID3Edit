@@ -1,0 +1,10 @@
+framework module ID3Edit {
+  umbrella header "ID3Edit.h"
+
+  export *
+  module * { export * }
+}
+
+module ID3Edit.Swift {
+    header "ID3Edit-Swift.h"
+}
