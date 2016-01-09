@@ -627,12 +627,6 @@ public class MP3File
     }
     
     
-    private func stringToByteArray(str: String) -> [Byte]
-    {
-        return [Byte](str.utf8)
-    }
-    
-    
     private func toByteArray<T>(var num: T) -> [Byte]
     {
         let rev = withUnsafePointer(&num) {
