@@ -25,6 +25,7 @@ public class MP3File
     typealias Byte = UInt8
     
     // MARK: - Constants
+    private let BYTE = 8
     private let TAG_OFFSET = 10
     private let FRAME_OFFSET = 6
     private let ART_FRAME_OFFSET = 12
@@ -503,25 +504,22 @@ public class MP3File
     private func extractInfoFromFrames(tagSize: Int)
     {
         // Get the tag
-        let range = NSRangeFromString("\(TAG_OFFSET) \(tagSize)")
-        let buffer = UnsafeMutablePointer<Byte>.alloc(tagSize)
-        
-        // Load the data into the buffer
-        data?.getBytes(buffer, range: range)
+        let ptr = UnsafePointer<Byte>(data!.bytes) + TAG_OFFSET
         
         // Loop through all the frames
         var curPosition = 0
         while curPosition < tagSize
         {
-            let frameBytes: [Byte] = [(buffer + curPosition).memory, (buffer + curPosition + 1).memory, (buffer + curPosition + 2).memory]
-            let frameSizeBytes: [Byte] = [(buffer + curPosition + 3).memory, (buffer + curPosition + 4).memory, (buffer + curPosition + 5).memory]
+            let bytes = ptr + curPosition
+            let frameBytes: [Byte] = [bytes[0], bytes[1], bytes[2]]
+            let frameSizeBytes: [Byte] = [bytes[3], bytes[4], bytes[5]]
             let frameSize = getFrameSize(frameSizeBytes)
             
             
             // Extract info from current frame if needed
             if isUseful(frameBytes)
             {
-                extractInfo(buffer, curPos: curPosition, frameSize: frameSize, frameBytes: frameBytes)
+                extractInfo(bytes, curPos: curPosition, frameSize: frameSize, frameBytes: frameBytes)
             }
             
             // Check for padding in order to break out
@@ -533,20 +531,16 @@ public class MP3File
             // Jump to next frame and move up current position
             curPosition += frameSize
         }
-        
-        // Dealloc the buffer
-        buffer.dealloc(tagSize)
     }
     
     
-    private func extractInfo(buffer: UnsafeMutablePointer<Byte>, curPos: Int, frameSize: Int, frameBytes: [Byte])
+    private func extractInfo(bytes: UnsafePointer<Byte>, curPos: Int, frameSize: Int, frameBytes: [Byte])
     {
-        let curMem = buffer + curPos
         
-        if curMem.memory == 84
+        if bytes.memory == 0x54 // Starts with 'T' (Artist, Title, or Album)
         {
             // Frame holds text content
-            let content = NSString(bytes: curMem + FRAME_OFFSET, length: frameSize - FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
+            let content = NSString(bytes: bytes + FRAME_OFFSET, length: frameSize - FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
             
             if isArtistFrame(frameBytes)
             {
@@ -564,21 +558,21 @@ public class MP3File
                 setAlbum(content)
             }
         }
-        else if curMem.memory == 0x55
+        else if bytes.memory == 0x55 // Starts with 'U' (Lyrics)
         {
             // Get lyrics
-            let content = NSString(bytes: curMem + LYRICS_FRAME_OFFSET, length: frameSize - LYRICS_FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
+            let content = NSString(bytes: bytes + LYRICS_FRAME_OFFSET, length: frameSize - LYRICS_FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
             
             // Store the lyrics
             setLyrics(content)
         }
-        else
+        else // Leaves us with artwork
         {
             // Frame holds artwork
-            art = NSData(bytes: curMem + ART_FRAME_OFFSET, length: frameSize - ART_FRAME_OFFSET)
+            art = NSData(bytes: bytes + ART_FRAME_OFFSET, length: frameSize - ART_FRAME_OFFSET)
             
             // Set art type
-            isPNG = (buffer + 7).memory != 0x4A
+            isPNG = (bytes + 7).memory != 0x4A
         }
     }
     
@@ -586,10 +580,17 @@ public class MP3File
     private func getFrameSize(frameSizeBytes: [Byte]) -> Int
     {
         // Calculate the size of the frame
-        let frameSize = Int(frameSizeBytes[0]) << 16 + Int(frameSizeBytes[1]) << 8 + Int(frameSizeBytes[2])
+        var size = FRAME_OFFSET
+        var shift = 2 * BYTE
+        
+        for var i = 0; i < 3; i++
+        {
+            size += Int(frameSizeBytes[i]) << shift
+            shift -= BYTE
+        }
         
         // Return the frame size including the frame header
-        return frameSize + FRAME_OFFSET
+        return size
     }
     
     
@@ -598,11 +599,12 @@ public class MP3File
         let ptr = UnsafePointer<Byte>(data!.bytes) + FRAME_OFFSET
         
         var size = 0
+        var shift = 21
         
         for var i = 0; i < 4; i++
         {
-            let shift = 7 * (3 - i)
             size += Int(ptr[i]) << shift
+            shift -= 7
         }
         
         return size
