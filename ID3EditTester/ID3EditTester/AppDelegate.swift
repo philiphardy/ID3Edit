@@ -19,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Test the framework
         do
         {
-            let file = try MP3File(path: "/Users/Phil/Music/iTunes/iTunes Media/Music/Big Sean/What A Year/What A Year.mp3")
+            let file = try MP3File(path: "/Users/Phil/Downloads/What A Year.mp3")
             
             // Test information parsing
             print("Title:\t\(file.getTitle())")
@@ -27,16 +27,18 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("Album:\t\(file.getAlbum())")
             print("Lyrics:\t\(file.getLyrics())")
 //
-//            // Save the artwork to the desktop
-//            file.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/art.png", atomically: true)
-//            //file.setLyrics(lyrics)
-//            
-//            let art = NSImage(byReferencingFile: "/Users/Phil/Downloads/art.png")
-//            
-//            file.setArtwork(art!, isPNG: true)
+            // Save the artwork to the desktop
+            file.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/art.png", atomically: true)
+            file.setTitle("TEST")
+            file.setLyrics("TEST")
+            file.setArtist("TEST")
+            file.setAlbum("TEST")
             
+            let art = NSImage(byReferencingFile: "/Users/Phil/Downloads/art.png")
             
-//            print("Success:\t\(file.writeTag())")
+            file.setArtwork(art!, isPNG: true)
+            
+            print("Success:\t\(try file.writeTag())")
         }
         catch {}
     }

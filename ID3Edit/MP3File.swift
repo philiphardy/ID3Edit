@@ -216,8 +216,9 @@ public class MP3File
      Writes the new tag to the file
      
      - Returns: `true` if writes successfully, `false` otherwise
+     - Throws: Throws `ID3EditErrors.TagSizeOverflow` if tag size is over 256MB
      */
-    public func writeTag() -> Bool
+    public func writeTag() throws -> Bool
     {
         // Make the frames
         
@@ -262,6 +263,10 @@ public class MP3File
         {
             // Prevent writing if there is no data
             return false
+        }
+        else if content.count > 0xFFFFFFF
+        {
+            throw ID3EditErrors.TagSizeOverflow
         }
         
         // Make the tag header

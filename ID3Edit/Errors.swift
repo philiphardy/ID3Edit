@@ -10,4 +10,5 @@ public enum ID3EditErrors: ErrorType
 {
     case NotAnMP3
     case FileDoesNotExist
+    case TagSizeOverflow
 }
