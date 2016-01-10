@@ -519,7 +519,7 @@ public class MP3File
             // Extract info from current frame if needed
             if isUseful(frameBytes)
             {
-                extractInfo(bytes, curPos: curPosition, frameSize: frameSize, frameBytes: frameBytes)
+                extractInfo(bytes, frameSize: frameSize, frameBytes: frameBytes)
             }
             
             // Check for padding in order to break out
@@ -534,7 +534,7 @@ public class MP3File
     }
     
     
-    private func extractInfo(bytes: UnsafePointer<Byte>, curPos: Int, frameSize: Int, frameBytes: [Byte])
+    private func extractInfo(bytes: UnsafePointer<Byte>, frameSize: Int, frameBytes: [Byte])
     {
         
         if bytes.memory == 0x54 // Starts with 'T' (Artist, Title, or Album)
@@ -572,7 +572,7 @@ public class MP3File
             art = NSData(bytes: bytes + ART_FRAME_OFFSET, length: frameSize - ART_FRAME_OFFSET)
             
             // Set art type
-            isPNG = (bytes + 7).memory != 0x4A
+            isPNG = bytes[7] != 0x4A // Doesn't equal 'J' for JPG
         }
     }
     
