@@ -595,22 +595,17 @@ public class MP3File
     
     private func getTagSize() -> Int
     {
-        let range = NSRangeFromString("6 4")
-        let buffer = UnsafeMutablePointer<Byte>.alloc(4)
+        let ptr = UnsafePointer<Byte>(data!.bytes) + FRAME_OFFSET
         
-        data?.getBytes(buffer, range: range)
+        var size = 0
         
-        let byte1 = UInt32(buffer.memory) << 21
+        for var i = 0; i < 4; i++
+        {
+            let shift = 7 * (3 - i)
+            size += Int(ptr[i]) << shift
+        }
         
-        let byte2 = UInt32((buffer + 1).memory) << 14
-        
-        let byte3 = UInt32((buffer + 2).memory) << 7
-        
-        let byte4 = UInt32((buffer + 3).memory)
-        
-        buffer.dealloc(4)
-        
-        return Int(byte1 + byte2 + byte3 + byte4)
+        return size
     }
     
     
@@ -624,16 +619,19 @@ public class MP3File
     
     private func toByteArray<T>(var num: T) -> [Byte]
     {
-        let rev = withUnsafePointer(&num) {
-            Array(UnsafeBufferPointer(start: UnsafePointer<Byte>($0), count: sizeof(T)))
+        // Get pointer to number
+        let ptr = withUnsafePointer(&num) {
+                UnsafePointer<Byte>($0)
         }
         
-        var cor: [Byte] = []
-        for byte in rev
+        // The array to store the bytes
+        var bytes: [Byte] = []
+        
+        for var i = sizeof(T) - 1; i >= 0; i--
         {
-            cor.insert(byte, atIndex: 0)
+            bytes.append(ptr[i])
         }
         
-        return cor
+        return bytes
     }
 }
