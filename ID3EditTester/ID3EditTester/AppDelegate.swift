@@ -26,7 +26,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             print("Artist:\t\(file.getArtist())")
             print("Album:\t\(file.getAlbum())")
             print("Lyrics:\t\(file.getLyrics())")
-//
+
             // Save the artwork to the desktop
             file.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/art.png", atomically: true)
             file.setTitle("TEST")
@@ -39,6 +39,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             file.setArtwork(art!, isPNG: true)
             
             print("Success:\t\(try file.writeTag())")
+            
         }
         catch {}
     }

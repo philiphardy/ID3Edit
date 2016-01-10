@@ -61,7 +61,7 @@ public class MP3File
         }
         
         // Get the data from the url
-        data = NSMutableData(contentsOfFile: path)
+        data = NSData(contentsOfFile: path)
         
         if data == nil
         {
