@@ -443,23 +443,18 @@ public class MP3File
     private func isTagPresent() -> (present: Bool, version: Bool)
     {
         // Determine if a tag is present
-        let len = 4
-        let buffer = UnsafeMutablePointer<Byte>.alloc(len)
         let header = FRAMES.HEADER
-        
-        data?.getBytes(buffer, length: len)
+        let bytes = UnsafePointer<Byte>(data!.bytes)
         
         var isPresent = true
         
         for var i = 0; i < 3; i++
         {
-            isPresent = isPresent && (buffer[i] == header[i])
+            isPresent = isPresent && (bytes[i] == header[i])
         }
         
         
-        let isCorrectVersion = buffer[3] == header[3]
-        
-        buffer.dealloc(len)
+        let isCorrectVersion = bytes[3] == header[3]
         
         return (isPresent, isCorrectVersion)
         
