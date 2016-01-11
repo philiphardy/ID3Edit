@@ -29,19 +29,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
             // Save the artwork to the desktop
             file.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/art.png", atomically: true)
-            file.setTitle("TEST")
-            file.setLyrics("TEST")
-            file.setArtist("TEST")
-            file.setAlbum("TEST")
-            
-            let art = NSImage(byReferencingFile: "/Users/Phil/Downloads/art.png")
-            
-            file.setArtwork(art!, isPNG: true)
-            
-            print("Success:\t\(try file.writeTag())")
+//            file.setTitle("New Test")
+//            file.setLyrics("Yessir")
+//            file.setArtist("What's good")
+//            file.setAlbum("That's right")
+//            
+//            let art = NSImage(byReferencingFile: "/Users/Phil/Downloads/art.png")
+//            
+//            file.setArtwork(art!, isPNG: true)
+//            
+//            print("Success:\t\(try file.writeTag())")
             
         }
-        catch {}
+        catch ID3EditErrors.FileDoesNotExist
+        {
+            print("Error: File Does Not Exist")
+        }
+        catch ID3EditErrors.NotAnMP3
+        {
+            print("Error: Not an MP3")
+        }
+        catch let e
+        {
+            print(e)
+        }
     }
 
 

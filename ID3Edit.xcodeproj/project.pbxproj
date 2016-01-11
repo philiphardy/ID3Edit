@@ -11,6 +11,7 @@
 		4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */; };
 		4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1804321C3DF496000E1FF2 /* Errors.swift */; };
 		4A36BFC51C422AF000E34BBD /* TagParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A36BFC41C422AF000E34BBD /* TagParser.swift */; };
+		4A36BFCA1C4317F100E34BBD /* ID3Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A36BFC91C4317F100E34BBD /* ID3Tag.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +32,7 @@
 		4A1804321C3DF496000E1FF2 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ID3EditTester.xcodeproj; path = ID3EditTester/ID3EditTester.xcodeproj; sourceTree = "<group>"; };
 		4A36BFC41C422AF000E34BBD /* TagParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagParser.swift; sourceTree = "<group>"; };
+		4A36BFC91C4317F100E34BBD /* ID3Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ID3Tag.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +70,7 @@
 				4A36BFC41C422AF000E34BBD /* TagParser.swift */,
 				4A1804051C3DED53000E1FF2 /* Info.plist */,
 				4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */,
+				4A36BFC91C4317F100E34BBD /* ID3Tag.swift */,
 				4A1804321C3DF496000E1FF2 /* Errors.swift */,
 			);
 			path = ID3Edit;
@@ -179,6 +182,7 @@
 				4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */,
 				4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */,
 				4A36BFC51C422AF000E34BBD /* TagParser.swift in Sources */,
+				4A36BFCA1C4317F100E34BBD /* ID3Tag.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
