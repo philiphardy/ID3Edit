@@ -13,7 +13,7 @@ At the top of your Swift code:
 import ID3Edit
 ```
 
-To open a mp3 file for writing the tag do this in your code:
+To open a mp3 file for writing:
 ```swift
 do
 {
@@ -56,4 +56,4 @@ catch ID3EditErrors.NotAnMP3
 }
 catch {}
 ```
-...that's it! Not too hard, right?
+...that's it! Pretty simple, right?
