@@ -1,2 +1,3 @@
 .DS_Store
-ID3Edit.xcodeproj/project.xcworkspace/xcuserdata/Phil.xcuserdatad/UserInterfaceState.xcuserstate
+ID3Edit.xcodeproj/xcuserdata/**
+xcuserdata/
