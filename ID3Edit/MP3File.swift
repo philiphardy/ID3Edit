@@ -31,9 +31,8 @@ public class MP3File
     // MARK: - Instance Variables
     private let parser: TagParser?
     private let tag: ID3Tag = ID3Tag()
-    private let path: String
-    private var data: NSData?
-    
+    private var path: String?
+    private let data: NSData?
     
     
     
@@ -56,6 +55,25 @@ public class MP3File
         if (path as NSString).pathExtension.caseInsensitiveCompare("mp3") != NSComparisonResult.OrderedSame
         {
             throw ID3EditErrors.NotAnMP3
+        }
+        
+        // Analyze the data
+        if !overwrite
+        {
+            parser!.analyzeData()
+        }
+    }
+    
+    
+    public init(data: NSData?, overwrite: Bool = false) throws
+    {
+        
+        self.data = data
+        parser = TagParser(data: data, tag: tag)
+        
+        if data == nil
+        {
+            throw ID3EditErrors.NoDataExists
         }
         
         // Analyze the data
@@ -123,6 +141,16 @@ public class MP3File
     
     
     // MARK: - Mutator Methods
+    
+    /**
+    Sets the path for the mp3 file to be written
+    
+    - Parameter path: The path of for the file to be written
+    */
+    public func setPath(path: String)
+    {
+        self.path = path
+    }
     
     
     /**
@@ -193,13 +221,49 @@ public class MP3File
      */
     public func writeTag() throws -> Bool
     {
+        if path == nil
+        {
+            // No path is set, prevent writing
+            throw ID3EditErrors.NoPathSet
+        }
+        
+        do
+        {
+            let newData = try getMP3Data()
+            
+            // Write the tag to the file
+            if newData.writeToFile(path!, atomically: true)
+            {
+                return true
+            }
+            else
+            {
+                return false
+            }
+        }
+        catch let err
+        {
+            throw err
+        }
+    }
+    
+    /**
+     Returns the MP3 file data with the new tag included
+     
+     - Returns: The MP3 data with the new tag included
+     - Note: The data is ready to write to a file
+     */
+    public func getMP3Data() throws -> NSData
+    {
+        
+        
         // Get the tag bytes
         let content = tag.getBytes()
         
         if content.count == 0
         {
             // Prevent writing if there is no data
-            return false
+            throw ID3EditErrors.NoDataExists
         }
         else if content.count > 0xFFFFFFF
         {
@@ -223,14 +287,6 @@ public class MP3File
         let music = data!.bytes + tagSize
         newData.appendBytes(music, length: data!.length - tagSize)
         
-        // Write the tag to the file
-        if newData.writeToFile(path, atomically: true)
-        {
-            return true
-        }
-        else
-        {
-            return false
-        }
+        return newData
     }
 }
