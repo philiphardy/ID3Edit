@@ -37,7 +37,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 //            let art = NSImage(byReferencingFile: "/Users/Phil/Downloads/art.png")
 //            
 //            file.setArtwork(art!, isPNG: true)
-//            
+            print(try file.getMP3Data())
+            
+//
 //            print("Success:\t\(try file.writeTag())")
             
         }

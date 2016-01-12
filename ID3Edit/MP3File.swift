@@ -256,14 +256,18 @@ public class MP3File
     public func getMP3Data() throws -> NSData
     {
         
+        if data == nil
+        {
+            // Prevent writing if there is no data
+            throw ID3EditErrors.NoDataExists
+        }
         
         // Get the tag bytes
         let content = tag.getBytes()
         
         if content.count == 0
         {
-            // Prevent writing if there is no data
-            throw ID3EditErrors.NoDataExists
+            return data!
         }
         else if content.count > 0xFFFFFFF
         {
