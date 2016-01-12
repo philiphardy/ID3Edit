@@ -19,6 +19,8 @@ do
 {
    // Open the file
    let mp3File = try MP3File(path: "/Users/Example/Music/example.mp3")
+   // Use MP3File(data: data) data being an NSData object
+   // to load an MP3 file from memory
 
    // Get song information
    print("Title:\t\(mp3File.getTitle())")
@@ -44,7 +46,8 @@ do
    }
 
    // Save the information to the mp3 file
-   mp3File.writeTag()
+   mp3File.writeTag() // or mp3.getMP3Data() returns the NSData
+                      // of the mp3 file
 }
 catch ID3EditErrors.FileDoesNotExist
 {
