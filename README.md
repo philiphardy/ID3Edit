@@ -21,6 +21,9 @@ do
    let mp3File = try MP3File(path: "/Users/Example/Music/example.mp3")
    // Use MP3File(data: data) data being an NSData object
    // to load an MP3 file from memory
+   // NOTE: If you use the MP3File(data: NSData?) initializer make
+   //       sure to set the path before calling writeTag() or an
+   //       exception will be thrown
 
    // Get song information
    print("Title:\t\(mp3File.getTitle())")
