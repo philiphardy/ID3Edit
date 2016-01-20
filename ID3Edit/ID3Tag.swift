@@ -159,6 +159,13 @@ internal class ID3Tag
             content.appendContentsOf(frame)
         }
         
+        if content.count == 0
+        {
+            // Prevent writing a tag header
+            // if no song info is present
+            return content
+        }
+        
         // Make the tag header
         var header = createTagHeader(content.count)
         header.appendContentsOf(content)
