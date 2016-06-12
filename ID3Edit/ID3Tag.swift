@@ -192,7 +192,8 @@ internal class ID3Tag
         }
         
         // Add the size to the byte array
-        var size = toByteArray(UInt32(cont.count))
+        var int = UInt32(cont.count)
+        var size = Toolbox.toByteArray(&int)
         size.removeFirst()
         
         // Create the frame
@@ -212,11 +213,12 @@ internal class ID3Tag
         
         let content = [Byte](getLyrics().utf8)
         
-        var size = toByteArray(UInt32(content.count + encoding.count))
-        size.removeFirst()
+        var size = UInt32(content.count + encoding.count)
+        var sizeArr = Toolbox.toByteArray(&size)
+        sizeArr.removeFirst()
         
         // Form the header
-        bytes.appendContentsOf(size)
+        bytes.appendContentsOf(sizeArr)
         bytes.appendContentsOf(encoding)
         bytes.appendContentsOf(content)
         
@@ -229,8 +231,8 @@ internal class ID3Tag
         var bytes: [Byte] = FRAMES.HEADER
         
         // Add the size to the byte array
-        let formattedSize = UInt32(calcSize(contentSize))
-        bytes.appendContentsOf(toByteArray(formattedSize))
+        var formattedSize = UInt32(calcSize(contentSize))
+        bytes.appendContentsOf(Toolbox.toByteArray(&formattedSize))
         
         // Return the completed tag header
         return bytes
@@ -242,10 +244,11 @@ internal class ID3Tag
         var bytes: [Byte] = FRAMES.ARTWORK
         
         // Calculate size
-        var size = toByteArray(UInt32(artwork.art!.length + 6))
-        size.removeFirst()
+        var size = UInt32(artwork.art!.length + 6)
+        var sizeArr = Toolbox.toByteArray(&size)
+        sizeArr.removeFirst()
         
-        bytes.appendContentsOf(size)
+        bytes.appendContentsOf(sizeArr)
         
         // Append encoding
         if artwork.isPNG!
@@ -265,16 +268,14 @@ internal class ID3Tag
         return bytes
     }
     
+    
     // MARK: - Helper Methods
-    
-    
-    
     private func calcSize(size: Int) -> Int
     {
         // Holds the size of the tag
         var newSize = 0
         
-        for var i = 0; i < 4; i++
+        for i in 0 ..< 4
         {
             // Get the bytes from size
             let shift = i * 8
@@ -285,7 +286,7 @@ internal class ID3Tag
             var byte = (size & mask) >> shift
             
             var oMask: Byte = 0x80
-            for var j = 0; j < i; j++
+            for _ in 0 ..< i
             {
                 // Create the overflow mask
                 oMask = oMask >> 1
@@ -309,23 +310,5 @@ internal class ID3Tag
     private func infoExists(category: String) -> Bool
     {
         return category != ""
-    }
-    
-    private func toByteArray<T>(var num: T) -> [Byte]
-    {
-        // Get pointer to number
-        let ptr = withUnsafePointer(&num) {
-            UnsafePointer<Byte>($0)
-        }
-        
-        // The array to store the bytes
-        var bytes: [Byte] = []
-        
-        for var i = sizeof(T) - 1; i >= 0; i--
-        {
-            bytes.append(ptr[i])
-        }
-        
-        return bytes
     }
 }

@@ -12,15 +12,18 @@
 		4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1804321C3DF496000E1FF2 /* Errors.swift */; };
 		4A36BFC51C422AF000E34BBD /* TagParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A36BFC41C422AF000E34BBD /* TagParser.swift */; };
 		4A36BFCA1C4317F100E34BBD /* ID3Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A36BFC91C4317F100E34BBD /* ID3Tag.swift */; };
+		4A39575D1D0E07B60064BF7C /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A39575C1D0E07B60064BF7C /* Toolbox.swift */; };
+		4A3957661D0E0C400064BF7C /* ID3EditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957651D0E0C400064BF7C /* ID3EditTests.swift */; };
+		4A3957681D0E0C400064BF7C /* ID3Edit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A1804001C3DED53000E1FF2 /* ID3Edit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		4A2988BB1C41A838001DF149 /* PBXContainerItemProxy */ = {
+		4A3957691D0E0C400064BF7C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 4A2988A71C41A837001DF149;
-			remoteInfo = ID3EditTester;
+			containerPortal = 4A1803F71C3DED52000E1FF2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 4A1803FF1C3DED52000E1FF2;
+			remoteInfo = ID3Edit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -30,9 +33,12 @@
 		4A1804051C3DED53000E1FF2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP3File.swift; sourceTree = "<group>"; };
 		4A1804321C3DF496000E1FF2 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
-		4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ID3EditTester.xcodeproj; path = ID3EditTester/ID3EditTester.xcodeproj; sourceTree = "<group>"; };
 		4A36BFC41C422AF000E34BBD /* TagParser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagParser.swift; sourceTree = "<group>"; };
 		4A36BFC91C4317F100E34BBD /* ID3Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ID3Tag.swift; sourceTree = "<group>"; };
+		4A39575C1D0E07B60064BF7C /* Toolbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
+		4A3957631D0E0C400064BF7C /* ID3EditTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ID3EditTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		4A3957651D0E0C400064BF7C /* ID3EditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ID3EditTests.swift; sourceTree = "<group>"; };
+		4A3957671D0E0C400064BF7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,14 +49,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4A3957601D0E0C400064BF7C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A3957681D0E0C400064BF7C /* ID3Edit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		4A1803F61C3DED52000E1FF2 = {
 			isa = PBXGroup;
 			children = (
-				4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */,
 				4A1804021C3DED53000E1FF2 /* ID3Edit */,
+				4A3957641D0E0C400064BF7C /* ID3EditTests */,
 				4A1804011C3DED53000E1FF2 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -59,6 +73,7 @@
 			isa = PBXGroup;
 			children = (
 				4A1804001C3DED53000E1FF2 /* ID3Edit.framework */,
+				4A3957631D0E0C400064BF7C /* ID3EditTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -71,17 +86,19 @@
 				4A1804051C3DED53000E1FF2 /* Info.plist */,
 				4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */,
 				4A36BFC91C4317F100E34BBD /* ID3Tag.swift */,
+				4A39575C1D0E07B60064BF7C /* Toolbox.swift */,
 				4A1804321C3DF496000E1FF2 /* Errors.swift */,
 			);
 			path = ID3Edit;
 			sourceTree = "<group>";
 		};
-		4A2988B81C41A837001DF149 /* Products */ = {
+		4A3957641D0E0C400064BF7C /* ID3EditTests */ = {
 			isa = PBXGroup;
 			children = (
-				4A2988BC1C41A838001DF149 /* ID3EditTester.app */,
+				4A3957651D0E0C400064BF7C /* ID3EditTests.swift */,
+				4A3957671D0E0C400064BF7C /* Info.plist */,
 			);
-			name = Products;
+			path = ID3EditTests;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -116,18 +133,40 @@
 			productReference = 4A1804001C3DED53000E1FF2 /* ID3Edit.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		4A3957621D0E0C400064BF7C /* ID3EditTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A39576B1D0E0C400064BF7C /* Build configuration list for PBXNativeTarget "ID3EditTests" */;
+			buildPhases = (
+				4A39575F1D0E0C400064BF7C /* Sources */,
+				4A3957601D0E0C400064BF7C /* Frameworks */,
+				4A3957611D0E0C400064BF7C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				4A39576A1D0E0C400064BF7C /* PBXTargetDependency */,
+			);
+			name = ID3EditTests;
+			productName = ID3EditTests;
+			productReference = 4A3957631D0E0C400064BF7C /* ID3EditTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		4A1803F71C3DED52000E1FF2 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 0730;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Hardy Creations";
 				TargetAttributes = {
 					4A1803FF1C3DED52000E1FF2 = {
 						CreatedOnToolsVersion = 7.2;
 						DevelopmentTeam = 45V2XP9N28;
+					};
+					4A3957621D0E0C400064BF7C = {
+						CreatedOnToolsVersion = 7.3.1;
 					};
 				};
 			};
@@ -141,31 +180,23 @@
 			mainGroup = 4A1803F61C3DED52000E1FF2;
 			productRefGroup = 4A1804011C3DED53000E1FF2 /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = 4A2988B81C41A837001DF149 /* Products */;
-					ProjectRef = 4A2988B71C41A837001DF149 /* ID3EditTester.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				4A1803FF1C3DED52000E1FF2 /* ID3Edit */,
+				4A3957621D0E0C400064BF7C /* ID3EditTests */,
 			);
 		};
 /* End PBXProject section */
 
-/* Begin PBXReferenceProxy section */
-		4A2988BC1C41A838001DF149 /* ID3EditTester.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = ID3EditTester.app;
-			remoteRef = 4A2988BB1C41A838001DF149 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
-
 /* Begin PBXResourcesBuildPhase section */
 		4A1803FE1C3DED52000E1FF2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4A3957611D0E0C400064BF7C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -179,6 +210,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4A39575D1D0E07B60064BF7C /* Toolbox.swift in Sources */,
 				4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */,
 				4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */,
 				4A36BFC51C422AF000E34BBD /* TagParser.swift in Sources */,
@@ -186,7 +218,23 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4A39575F1D0E0C400064BF7C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A3957661D0E0C400064BF7C /* ID3EditTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		4A39576A1D0E0C400064BF7C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 4A1803FF1C3DED52000E1FF2 /* ID3Edit */;
+			targetProxy = 4A3957691D0E0C400064BF7C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		4A1804061C3DED53000E1FF2 /* Debug */ = {
@@ -314,6 +362,30 @@
 			};
 			name = Release;
 		};
+		4A39576C1D0E0C400064BF7C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ID3EditTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hardycreations.ID3EditTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		4A39576D1D0E0C400064BF7C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				COMBINE_HIDPI_IMAGES = YES;
+				INFOPLIST_FILE = ID3EditTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.hardycreations.ID3EditTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -334,6 +406,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		4A39576B1D0E0C400064BF7C /* Build configuration list for PBXNativeTarget "ID3EditTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4A39576C1D0E0C400064BF7C /* Debug */,
+				4A39576D1D0E0C400064BF7C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};

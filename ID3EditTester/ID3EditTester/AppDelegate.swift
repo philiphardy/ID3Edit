@@ -19,7 +19,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Test the framework
         do
         {
-            let file = try MP3File(path: "/Users/Phil/Downloads/What A Year.mp3")
+            let file = try MP3File(path: "/Users/Phil/Desktop/What A Year.mp3")
             
             // Test information parsing
             print("Title:\t\(file.getTitle())")

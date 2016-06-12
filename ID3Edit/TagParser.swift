@@ -45,7 +45,7 @@ internal class TagParser
         
         var isPresent = true
         
-        for var i = 0; i < 3; i++
+        for i in 0 ..< 3
         {
             isPresent = isPresent && (bytes[i] == header[i])
         }
@@ -178,7 +178,7 @@ internal class TagParser
         var size = ID3Tag.FRAME_OFFSET
         var shift = 2 * BYTE
         
-        for var i = 0; i < 3; i++
+        for i in 0 ..< 3
         {
             size += Int(frameSizeBytes[i]) << shift
             shift -= BYTE
@@ -196,7 +196,7 @@ internal class TagParser
         var size = 0
         var shift = 21
         
-        for var i = 0; i < 4; i++
+        for i in 0 ..< 4
         {
             size += Int(ptr[i]) << shift
             shift -= 7
