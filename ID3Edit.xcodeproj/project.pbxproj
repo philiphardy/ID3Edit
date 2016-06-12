@@ -13,8 +13,11 @@
 		4A36BFC51C422AF000E34BBD /* TagParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A36BFC41C422AF000E34BBD /* TagParser.swift */; };
 		4A36BFCA1C4317F100E34BBD /* ID3Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A36BFC91C4317F100E34BBD /* ID3Tag.swift */; };
 		4A39575D1D0E07B60064BF7C /* Toolbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A39575C1D0E07B60064BF7C /* Toolbox.swift */; };
-		4A3957661D0E0C400064BF7C /* ID3EditTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957651D0E0C400064BF7C /* ID3EditTests.swift */; };
 		4A3957681D0E0C400064BF7C /* ID3Edit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A1804001C3DED53000E1FF2 /* ID3Edit.framework */; };
+		4A39576F1D0E10890064BF7C /* ToolboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A39576E1D0E10890064BF7C /* ToolboxTests.swift */; };
+		4A3957711D0E10AE0064BF7C /* TagParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957701D0E10AE0064BF7C /* TagParserTests.swift */; };
+		4A3957731D0E10C50064BF7C /* MP3FileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957721D0E10C50064BF7C /* MP3FileTests.swift */; };
+		4A3957751D0E10CF0064BF7C /* ID3TagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957741D0E10CF0064BF7C /* ID3TagTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,8 +40,11 @@
 		4A36BFC91C4317F100E34BBD /* ID3Tag.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ID3Tag.swift; sourceTree = "<group>"; };
 		4A39575C1D0E07B60064BF7C /* Toolbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toolbox.swift; sourceTree = "<group>"; };
 		4A3957631D0E0C400064BF7C /* ID3EditTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ID3EditTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		4A3957651D0E0C400064BF7C /* ID3EditTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ID3EditTests.swift; sourceTree = "<group>"; };
 		4A3957671D0E0C400064BF7C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4A39576E1D0E10890064BF7C /* ToolboxTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolboxTests.swift; sourceTree = "<group>"; };
+		4A3957701D0E10AE0064BF7C /* TagParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagParserTests.swift; sourceTree = "<group>"; };
+		4A3957721D0E10C50064BF7C /* MP3FileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP3FileTests.swift; sourceTree = "<group>"; };
+		4A3957741D0E10CF0064BF7C /* ID3TagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ID3TagTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,8 +101,11 @@
 		4A3957641D0E0C400064BF7C /* ID3EditTests */ = {
 			isa = PBXGroup;
 			children = (
-				4A3957651D0E0C400064BF7C /* ID3EditTests.swift */,
+				4A3957701D0E10AE0064BF7C /* TagParserTests.swift */,
+				4A3957721D0E10C50064BF7C /* MP3FileTests.swift */,
+				4A3957741D0E10CF0064BF7C /* ID3TagTests.swift */,
 				4A3957671D0E0C400064BF7C /* Info.plist */,
+				4A39576E1D0E10890064BF7C /* ToolboxTests.swift */,
 			);
 			path = ID3EditTests;
 			sourceTree = "<group>";
@@ -222,7 +231,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4A3957661D0E0C400064BF7C /* ID3EditTests.swift in Sources */,
+				4A3957731D0E10C50064BF7C /* MP3FileTests.swift in Sources */,
+				4A39576F1D0E10890064BF7C /* ToolboxTests.swift in Sources */,
+				4A3957711D0E10AE0064BF7C /* TagParserTests.swift in Sources */,
+				4A3957751D0E10CF0064BF7C /* ID3TagTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
