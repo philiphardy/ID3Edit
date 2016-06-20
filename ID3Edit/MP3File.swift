@@ -13,7 +13,8 @@ import Foundation
  Opens an MP3 file for reading and writing the ID3 tag
  
  - Parameter path: The path to the MP3 file
- - Parameter overwrite: Overwrite the ID3 tag in the file if one exists. (Default value is false) 
+ - Parameter overwrite: Overwrite the ID3 tag in the file if one exists. This will completely remove all the 
+                        information from the previous tag, if there is one. (false by default)
  
  **Note**: If there is an ID3 tag present but not of version 2.x the ID3 tag will be overwritten when the new tag is written
  
@@ -29,8 +30,7 @@ public class MP3File
     private let BYTE = 8
     
     // MARK: - Instance Variables
-    private let parser: TagParser?
-    private let tag: ID3Tag = ID3Tag()
+    private let tag: ID3Tag?
     private var path: String?
     private let data: NSData?
     
@@ -41,45 +41,38 @@ public class MP3File
         // Store the url in order to write to it later
         self.path = path
         
-        // Get the data from the file
-        data = NSData(contentsOfFile: path)
-        parser = TagParser(data: data, tag: tag)
-        
-        if data == nil
-        {
-            // The file does not exist
-            throw ID3EditErrors.FileDoesNotExist
-        }
-        
         // Check the path extension
         if (path as NSString).pathExtension.caseInsensitiveCompare("mp3") != NSComparisonResult.OrderedSame
         {
             throw ID3EditErrors.NotAnMP3
         }
         
-        // Analyze the data
-        if !overwrite
+        // Get the data from the file
+        data = NSData(contentsOfFile: path)
+        
+        if data == nil
         {
-            parser!.analyzeData()
+            // The file does not exist
+            throw ID3EditErrors.FileDoesNotExist
+        }
+        else
+        {
+            tag = ID3Tag(data: data!, overwrite: overwrite)
         }
     }
     
     
     public init(data: NSData?, overwrite: Bool = false) throws
     {
-        
         self.data = data
-        parser = TagParser(data: data, tag: tag)
         
         if data == nil
         {
             throw ID3EditErrors.NoDataExists
         }
-        
-        // Analyze the data
-        if !overwrite
+        else
         {
-            parser!.analyzeData()
+            tag = ID3Tag(data: data!, overwrite: overwrite)
         }
     }
     

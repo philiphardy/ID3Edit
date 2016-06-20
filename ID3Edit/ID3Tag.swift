@@ -21,12 +21,26 @@ internal class ID3Tag
     
     internal class FRAMES
     {
-        static let ARTIST: [Byte] = [0x54, 0x50, 0x31]
-        static let TITLE: [Byte] = [0x54, 0x54, 0x32]
-        static let ALBUM: [Byte] = [0x54, 0x41, 0x4C]
-        static let LYRICS: [Byte] = [0x55, 0x4C, 0x54]
-        static let ARTWORK: [Byte] = [0x50, 0x49, 0x43]
-        static let HEADER: [Byte] = [0x49, 0x44, 0x33, 0x02, 0x00, 0x00]
+        internal class V2
+        {
+            // ID3 version 2 frames
+            internal static let ARTIST: [Byte] = [0x54, 0x50, 0x31]
+            internal static let TITLE: [Byte] = [0x54, 0x54, 0x32]
+            internal static let ALBUM: [Byte] = [0x54, 0x41, 0x4C]
+            internal static let LYRICS: [Byte] = [0x55, 0x4C, 0x54]
+            internal static let ARTWORK: [Byte] = [0x50, 0x49, 0x43]
+            internal static let HEADER: [Byte] = [0x49, 0x44, 0x33, 0x02, 0x00, 0x00]
+        }
+        internal class V3
+        {
+            // ID3 version 3 frames
+            internal static let ARTIST: [Byte] = [0x54, 0x50, 0x45, 0x31]
+            internal static let TITLE: [Byte] = [0x54, 0x49, 0x54, 0x32]
+            internal static let ALBUM: [Byte] = [0x54, 0x41, 0x4C, 0x42]
+            internal static let LYRICS: [Byte] = [0x55, 0x53, 0x4C, 0x54]
+            internal static let ARTWORK: [Byte] = [0x41, 0x50, 0x49, 0x43]
+            internal static let HEADER: [Byte] = [0x49, 0x44, 0x33, 0x03, 0x00, 0x00]
+        }
     }
     
     // MARK: - Constants
@@ -34,6 +48,7 @@ internal class ID3Tag
     internal static let FRAME_OFFSET = 6
     internal static let ART_FRAME_OFFSET = 12
     internal static let LYRICS_FRAME_OFFSET = 11
+    internal static let VERSION_OFFSET = 3
     
     // MARK: - Instance Variables
     private var artist = ""
@@ -41,6 +56,18 @@ internal class ID3Tag
     private var album = ""
     private var lyrics = ""
     private var artwork = AlbumArtwork()
+    
+    
+    // MARK: - Constructors
+    internal init(data: NSData, overwrite: Bool)
+    {
+        // Only parse the tag if wanted
+        if !overwrite
+        {
+            // Parse the data and populate this tag
+            TagParser.initialize(data, tag: self)
+        }
+    }
     
     
     // MARK: - Accessor Methods
@@ -127,21 +154,21 @@ internal class ID3Tag
         if infoExists(artist)
         {
             // Create the artist frame
-            let frame = createFrame(FRAMES.ARTIST, str: getArtist())
+            let frame = createFrame(FRAMES.V2.ARTIST, str: getArtist())
             content.appendContentsOf(frame)
         }
         
         if infoExists(title)
         {
             // Create the title frame
-            let frame = createFrame(FRAMES.TITLE, str: getTitle())
+            let frame = createFrame(FRAMES.V2.TITLE, str: getTitle())
             content.appendContentsOf(frame)
         }
         
         if infoExists(album)
         {
             // Create the album frame
-            let frame = createFrame(FRAMES.ALBUM, str: getAlbum())
+            let frame = createFrame(FRAMES.V2.ALBUM, str: getAlbum())
             content.appendContentsOf(frame)
         }
         
@@ -207,7 +234,7 @@ internal class ID3Tag
     
     private func createLyricFrame() -> [Byte]
     {
-        var bytes: [Byte] = FRAMES.LYRICS
+        var bytes: [Byte] = FRAMES.V2.LYRICS
         
         let encoding: [Byte] = [0x00, 0x65, 0x6E, 0x67, 0x00]
         
@@ -228,7 +255,7 @@ internal class ID3Tag
     
     private func createTagHeader(contentSize: Int) -> [Byte]
     {
-        var bytes: [Byte] = FRAMES.HEADER
+        var bytes: [Byte] = FRAMES.V2.HEADER
         
         // Add the size to the byte array
         var formattedSize = UInt32(calcSize(contentSize))
@@ -241,7 +268,7 @@ internal class ID3Tag
     
     private func createArtFrame() -> [Byte]
     {
-        var bytes: [Byte] = FRAMES.ARTWORK
+        var bytes: [Byte] = FRAMES.V2.ARTWORK
         
         // Calculate size
         var size = UInt32(artwork.art!.length + 6)
