@@ -6,35 +6,77 @@
 	<dict>
 		<key>Resources/Info.plist</key>
 		<data>
-		TBfziQCmnRGJuOiYsfTq54mov5s=
+		25B014fYe8NIJBhJ0/lqe6xWW10=
 		</data>
 	</dict>
 	<key>files2</key>
 	<dict>
 		<key>Headers/ID3Edit-Swift.h</key>
-		<data>
-		taoblxbTOrmm7dPyJP4WCs36yt0=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			iZ0p4ETGiHGHsyB+ARNvtYaUckw=
+			</data>
+			<key>hash2</key>
+			<data>
+			zx9+NsTcEQEgcGXb18XTP7cZ2UWpOTg2RsMCdm/f6X0=
+			</data>
+		</dict>
 		<key>Headers/ID3Edit.h</key>
-		<data>
-		rZLE67gpXVAoOTEBDf10A+6J+Rw=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			+OPlBfAUBNHspTWuNJ258JeUThM=
+			</data>
+			<key>hash2</key>
+			<data>
+			/bsZxErcbU6LRdFFYipmEkWyHS/MoNg66TWsyHqBroU=
+			</data>
+		</dict>
 		<key>Modules/ID3Edit.swiftmodule/x86_64.swiftdoc</key>
-		<data>
-		UHtVMnqvi755BaaneqELgCWBgpM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			CTf/V4m0zkmFfjDYdN6JRo23oT0=
+			</data>
+			<key>hash2</key>
+			<data>
+			tE/CY5+B06GEwpXroG1RZzyE3EvTbQ6lftjEV9Oe3z0=
+			</data>
+		</dict>
 		<key>Modules/ID3Edit.swiftmodule/x86_64.swiftmodule</key>
-		<data>
-		akLS9Ce/cgyR2dcAKlvfuksBHSU=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			sqlaXZ7NU2TymDBbs8GUTIZiXrA=
+			</data>
+			<key>hash2</key>
+			<data>
+			VouDZ5oIUj6gVGXYvKhyHEXfkbDa8OWHRRYusRbM0/4=
+			</data>
+		</dict>
 		<key>Modules/module.modulemap</key>
-		<data>
-		LHiLOKqRVsRlc7botaQwNWu9mgM=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			LHiLOKqRVsRlc7botaQwNWu9mgM=
+			</data>
+			<key>hash2</key>
+			<data>
+			pk7fkKih+26PSrR/l1yvfx3YBcE877k1/epIpn0nCMI=
+			</data>
+		</dict>
 		<key>Resources/Info.plist</key>
-		<data>
-		TBfziQCmnRGJuOiYsfTq54mov5s=
-		</data>
+		<dict>
+			<key>hash</key>
+			<data>
+			25B014fYe8NIJBhJ0/lqe6xWW10=
+			</data>
+			<key>hash2</key>
+			<data>
+			upae1PAfiVo+Jh4Tqk3q/+fS6QNiC5zRycseUSOSVG4=
+			</data>
+		</dict>
 	</dict>
 	<key>rules</key>
 	<dict>
