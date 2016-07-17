@@ -25,29 +25,34 @@
 //    SOFTWARE.
 //
 
-import XCTest
-@testable import ID3Edit
+import XCTest;
+@testable import ID3Edit;
 
-class TagParserTests: XCTestCase {
+class TagParserTests: XCTestCase
+{
     
-    var parser: TagParser?
+    let whatAYearParser = TagParser(data: NSData(contentsOfFile: "/Users/Phil/Desktop/What A Year.mp3"), tag: ID3Tag());
+    let changesParser = TagParser(data: NSData(contentsOfFile: "/Users/Phil/Desktop/05 Changes.mp3")!, tag: ID3Tag());
 
-    override func setUp() {
-        super.setUp()
-        
-        parser = TagParser(data: NSData(contentsOfFile: "/Users/Phil/Desktop/What A Year.mp3"), tag: ID3Tag())
-        parser?.analyzeData()
+    override func setUp()
+    {
+        super.setUp();
     }
     
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown()
+    {
+        super.tearDown();
     }
 
-    func test_getTagSize() {
-        XCTAssert(parser?.getTagSize() == 0x110CC)
+    func test_getTagSize()
+    {
+        XCTAssertEqual(whatAYearParser.getTagSize(), 0x110CC);
+        XCTAssertEqual(changesParser.getTagSize(), 0x1AFC8);
     }
     
-    func test_isTagPresent() {
-        XCTAssert(parser!.isTagPresent() == (true, true))
+    func test_isTagPresent()
+    {
+        XCTAssert(whatAYearParser.isTagPresent());
+        XCTAssert(changesParser.isTagPresent());
     }
 }

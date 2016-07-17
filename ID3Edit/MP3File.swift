@@ -25,7 +25,7 @@
 //    SOFTWARE.
 //
 
-import Foundation
+import Foundation;
 
 
 /**
@@ -42,56 +42,58 @@ import Foundation
 public class MP3File
 {
     
-    typealias Byte = UInt8
+    typealias Byte = UInt8;
     
     
     // MARK: - Constants
-    private let BYTE = 8
+    private let BYTE = 8;
     
     // MARK: - Instance Variables
-    private let tag: ID3Tag?
-    private var path: String?
-    private let data: NSData?
+    private let tag: ID3Tag;
+    private let parser: TagParser;
+    private var path: String?;
+    private let data: NSData?;
     
     
-    
-    public init(path: String, overwrite: Bool = false) throws
+    public convenience init(path: String, overwrite: Bool = false) throws
     {
-        // Store the url in order to write to it later
-        self.path = path
-        
         // Check the path extension
         if (path as NSString).pathExtension.caseInsensitiveCompare("mp3") != NSComparisonResult.OrderedSame
         {
-            throw ID3EditErrors.NotAnMP3
+            throw ID3EditErrors.NotAnMP3;
         }
         
-        // Get the data from the file
-        data = NSData(contentsOfFile: path)
-        
-        if data == nil
+        do
         {
-            // The file does not exist
-            throw ID3EditErrors.FileDoesNotExist
+            try self.init(data: NSData(contentsOfFile: path), overwrite: overwrite);
+            
+            // Store the url in order to write to it later
+            self.path = path;
         }
-        else
+        catch let error
         {
-            tag = ID3Tag(data: data!, overwrite: overwrite)
+            throw error;
         }
     }
     
     
     public init(data: NSData?, overwrite: Bool = false) throws
     {
-        self.data = data
+        self.data = data;
         
         if data == nil
         {
-            throw ID3EditErrors.NoDataExists
+            throw ID3EditErrors.NoDataExists;
         }
         else
         {
-            tag = ID3Tag(data: data!, overwrite: overwrite)
+            tag = ID3Tag();
+            parser = TagParser(data: data, tag: tag);
+            
+            if !overwrite
+            {
+                parser.analyzeData();
+            }
         }
     }
     
@@ -105,7 +107,7 @@ public class MP3File
      */
     public func getArtwork() -> NSImage?
     {
-        return tag.getArtwork()
+        return tag.getArtwork();
     }
     
     /**
@@ -115,7 +117,7 @@ public class MP3File
      */
     public func getArtist() -> String
     {
-        return tag.getArtist()
+        return tag.getArtist();
     }
     
     
@@ -126,7 +128,7 @@ public class MP3File
      */
     public func getTitle() -> String
     {
-        return tag.getTitle()
+        return tag.getTitle();
     }
     
     
@@ -137,7 +139,7 @@ public class MP3File
     */
     public func getAlbum() -> String
     {
-        return tag.getAlbum()
+        return tag.getAlbum();
     }
     
     
@@ -148,7 +150,7 @@ public class MP3File
      */
     public func getLyrics() -> String
     {
-        return tag.getLyrics()
+        return tag.getLyrics();
     }
     
     
@@ -161,7 +163,7 @@ public class MP3File
     */
     public func setPath(path: String)
     {
-        self.path = path
+        self.path = path;
     }
     
     
@@ -172,7 +174,7 @@ public class MP3File
      */
     public func setArtist(artist: String)
     {
-        tag.setArtist(artist)
+        tag.setArtist(artist);
     }
     
     
@@ -183,7 +185,7 @@ public class MP3File
      */
     public func setTitle(title: String)
     {
-        tag.setTitle(title)
+        tag.setTitle(title);
     }
     
     
@@ -194,7 +196,7 @@ public class MP3File
      */
     public func setAlbum(album: String)
     {
-        tag.setAlbum(album)
+        tag.setAlbum(album);
     }
     
     
@@ -205,7 +207,7 @@ public class MP3File
      */
     public func setLyrics(lyrics: String)
     {
-        tag.setLyrics(lyrics)
+        tag.setLyrics(lyrics);
     }
     
     
@@ -219,14 +221,14 @@ public class MP3File
      */
     public func setArtwork(artwork: NSImage, isPNG: Bool)
     {
-        tag.setArtwork(artwork, isPNG: isPNG)
+        tag.setArtwork(artwork, isPNG: isPNG);
     }
     
     
     // MARK: - Tag Creation Methods
     
     /**
-     Writes the new tag to the file
+     Writes the new tag to the specified path.
      
      - Returns: `true` if writes successfully, `false` otherwise
      - Throws: Throws `ID3EditErrors.TagSizeOverflow` if tag size is over 256MB
@@ -236,26 +238,26 @@ public class MP3File
         if path == nil
         {
             // No path is set, prevent writing
-            throw ID3EditErrors.NoPathSet
+            throw ID3EditErrors.NoPathSet;
         }
         
         do
         {
-            let newData = try getMP3Data()
+            let newData = try getMP3Data();
             
-            // Write the tag to the file
+            // Write the tag to the path
             if newData.writeToFile(path!, atomically: true)
             {
-                return true
+                return true;
             }
             else
             {
-                return false
+                return false;
             }
         }
         catch let err
         {
-            throw err
+            throw err;
         }
     }
     
@@ -271,38 +273,39 @@ public class MP3File
         if data == nil
         {
             // Prevent writing if there is no data
-            throw ID3EditErrors.NoDataExists
+            throw ID3EditErrors.NoDataExists;
         }
         
         // Get the tag bytes
-        let content = tag.getBytes()
+        let tagBytes = tag.getBytes();
         
-        if content.count == 0
+        if tagBytes.count == 0
         {
-            return data!
+            return data!;
         }
-        else if content.count > 0xFFFFFFF
+        else if tagBytes.count > 0xFFFFFFF
         {
-            throw ID3EditErrors.TagSizeOverflow
+            throw ID3EditErrors.TagSizeOverflow;
         }
         
-        // Form the binary data
-        let newData = NSMutableData(bytes: content, length: content.count)
+        // Form the binary data for a new mp3 file
+        let newData = NSMutableData(bytes: tagBytes, length: tagBytes.count);
         
-        var tagSize: Int
+        var tagSize: Int;
         
-        if parser!.isTagPresent().present
+        if parser.isTagPresent()
         {
-            tagSize = parser!.getTagSize() + ID3Tag.TAG_OFFSET
+            tagSize = parser.getTagSize() + ID3Tag.TAG_OFFSET;
         }
         else
         {
-            tagSize = 0
+            tagSize = 0;
         }
         
-        let music = data!.bytes + tagSize
-        newData.appendBytes(music, length: data!.length - tagSize)
+        let musicStartPtr = data!.bytes + tagSize;
+        let musicLen = data!.length - tagSize;
+        newData.appendBytes(musicStartPtr, length: musicLen);
         
-        return newData
+        return newData;
     }
 }

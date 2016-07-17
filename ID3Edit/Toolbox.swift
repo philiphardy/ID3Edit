@@ -25,7 +25,7 @@
 //    SOFTWARE.
 //
 
-typealias Byte = UInt8
+typealias Byte = UInt8;
 
 internal class Toolbox
 {
@@ -33,17 +33,36 @@ internal class Toolbox
     {
         // Get pointer to number
         let ptr = withUnsafePointer(&num) {
-            UnsafePointer<Byte>($0)
+            UnsafePointer<Byte>($0);
         }
         
         // The array to store the bytes
-        var bytes: [Byte] = []
+        var bytes: [Byte] = [];
         
         for i in (0 ..< sizeof(T)).reverse()
         {
-            bytes.append(ptr[i])
+            bytes.append(ptr[i]);
         }
         
-        return bytes
+        return bytes;
+    }
+    
+    internal static func removePadding(str: String) -> String
+    {
+        var buffer = [Byte](str.utf8);
+        
+        // Remove padding from front
+        while buffer.first == 0
+        {
+            buffer.removeFirst();
+        }
+        
+        // Remove padding from end
+        while buffer.last == 0
+        {
+            buffer.removeLast();
+        }
+        
+        return NSString(bytes: UnsafePointer<Byte>(buffer), length: buffer.count, encoding: NSASCIIStringEncoding) as! String;
     }
 }

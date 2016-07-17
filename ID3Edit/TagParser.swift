@@ -25,230 +25,274 @@
 //    SOFTWARE.
 //
 
-import Foundation
+import CoreFoundation;
+import Foundation;
 
 internal class TagParser
 {
-    typealias Byte = UInt8
+    typealias Byte = UInt8;
     
     // MARK: - Constants
-    private static let BYTE = 8
-    private static let VERSION_OFFSET = 3
+    private static let BYTE = 8;
+    private static let VERSION_OFFSET = 3;
+    private static let TAG_SIZE_OFFSET = 6;
     
     // MARK: - Instance Variables
-    private static var data: NSData?
-    private static var tag: ID3Tag?
-    private static var version: Byte?
-    private static var frames: AnyClass?
+    private var data: NSData?;
+    private var tag: ID3Tag?;
+    private var version: Byte?;
     
-    internal static func initialize(data: NSData?, tag: ID3Tag)
+    internal init(data: NSData?, tag: ID3Tag)
     {
-        self.data = data
-        self.tag = tag
+        self.data = data;
+        self.tag = tag;
         
         // Make sure there is at least 4 bytes of data
         if data!.length >= 4
         {
-            self.version = UnsafePointer<Byte>(data!.bytes)[VERSION_OFFSET]
+            version = UnsafePointer<Byte>(data!.bytes)[TagParser.VERSION_OFFSET];
         }
     }
     
     // MARK: - Tag Analysis
-    private static func analyzeData()
+    internal func analyzeData()
     {
         if isTagPresent()
         {
             // Loop through frames until reach the end of the tag
-            extractInfoFromFrames(getTagSize())
+            extractInfoFromFrames();
         }
     }
     
     
-    private static func isTagPresent() -> Bool
+    internal func isTagPresent() -> Bool
     {
         // Determine if a tag is present
-        let bytes = UnsafePointer<Byte>(data!.bytes)
+        let bytes = UnsafePointer<Byte>(data!.bytes);
         
-        var isPresent = true
+        var isPresent = false;
         
         for i in 0 ..< 3
         {
-            isPresent = isPresent && (bytes[i] == ID3Tag.FRAMES.V2.HEADER[i] ||
-                                      bytes[i] == ID3Tag.FRAMES.V3.HEADER[i])
+            isPresent = isPresent || (bytes[i] == ID3Tag.FRAMES.V2.HEADER[i] ||
+                                      bytes[i] == ID3Tag.FRAMES.V3.HEADER[i]);
         }
         
-        return isPresent
+        return isPresent;
     }
     
     
-    private static func isUseful(frame: [Byte]) -> Bool
+    private func isUseful(frame: [Byte]) -> Bool
     {
         // Determine if the frame is useful
-        return isArtistFrame(frame) || isTitleFrame(frame) || isAlbumFrame(frame) || isArtworkFrame(frame) || isLyricsFrame(frame)
+        return isArtistFrame(frame) ||
+               isTitleFrame(frame) ||
+               isAlbumFrame(frame) ||
+               isArtworkFrame(frame) ||
+               isLyricsFrame(frame);
     }
     
     
-    private static func isLyricsFrame(frame: [Byte]) -> Bool
+    private func isLyricsFrame(frame: [Byte]) -> Bool
     {
         if version == 2
         {
-            return frame == ID3Tag.FRAMES.V2.LYRICS
+            return frame == ID3Tag.FRAMES.V2.LYRICS;
         }
         
-        return frame == ID3Tag.FRAMES.V3.LYRICS
+        return frame == ID3Tag.FRAMES.V3.LYRICS;
     }
     
     
-    private static func isArtistFrame(frame: [Byte]) -> Bool
+    private func isArtistFrame(frame: [Byte]) -> Bool
     {
         if version == 2
         {
-            return frame == ID3Tag.FRAMES.V2.ARTIST
+            return frame == ID3Tag.FRAMES.V2.ARTIST;
         }
         
-        return frame == ID3Tag.FRAMES.V3.ARTIST
+        return frame == ID3Tag.FRAMES.V3.ARTIST;
     }
     
     
-    private static func isAlbumFrame(frame: [Byte]) -> Bool
+    private func isAlbumFrame(frame: [Byte]) -> Bool
     {
         if version == 2
         {
-            return frame == ID3Tag.FRAMES.V2.ALBUM
+            return frame == ID3Tag.FRAMES.V2.ALBUM;
         }
         
-        return frame == ID3Tag.FRAMES.V3.ALBUM
+        return frame == ID3Tag.FRAMES.V3.ALBUM;
     }
     
     
-    private static func isTitleFrame(frame: [Byte]) -> Bool
+    private func isTitleFrame(frame: [Byte]) -> Bool
     {
         if version == 2
         {
-            return frame == ID3Tag.FRAMES.V2.TITLE
+            return frame == ID3Tag.FRAMES.V2.TITLE;
         }
         
-        return frame == ID3Tag.FRAMES.V3.TITLE
+        return frame == ID3Tag.FRAMES.V3.TITLE;
     }
     
     
-    private static func isArtworkFrame(frame: [Byte]) -> Bool
+    private func isArtworkFrame(frame: [Byte]) -> Bool
     {
         if version == 2
         {
-            return frame == ID3Tag.FRAMES.V2.ARTWORK
+            return frame == ID3Tag.FRAMES.V2.ARTWORK;
         }
         
-        return frame == ID3Tag.FRAMES.V3.ARTWORK
+        return frame == ID3Tag.FRAMES.V3.ARTWORK;
     }
     
     
     // MARK: - Extraction Methods
-    private static func extractInfoFromFrames(tagSize: Int)
+    private func extractInfoFromFrames()
     {
+        let tagSize = getTagSize();
         // Get the tag
-        let ptr = UnsafePointer<Byte>(data!.bytes) + ID3Tag.TAG_OFFSET
+        let ptr = UnsafePointer<Byte>(data!.bytes) + ID3Tag.TAG_OFFSET;
         
         // Loop through all the frames
-        var curPosition = 0
+        var curPosition = 0;
         while curPosition < tagSize
         {
-            let bytes = ptr + curPosition
-            let frameBytes: [Byte] = [bytes[0], bytes[1], bytes[2]]
-            let frameSizeBytes: [Byte] = [bytes[3], bytes[4], bytes[5]]
-            let frameSize = getFrameSize(frameSizeBytes)
+            let bytes = ptr + curPosition;
+            let frameBytes: [Byte];
+            let frameSize: Int;
+            
+            if version == 2
+            {
+                frameBytes = [bytes[0], bytes[1], bytes[2]];
+                frameSize = getFrameSize(bytes, offset: 2);
+            }
+            else
+            {
+                frameBytes = [bytes[0], bytes[1], bytes[2], bytes[3]];
+                frameSize = getFrameSize(bytes, offset: 4);
+            }
             
             
             // Extract info from current frame if needed
             if isUseful(frameBytes)
             {
-                extractInfo(bytes, frameSize: frameSize, frameBytes: frameBytes)
+                extractInfo(bytes, frameSize: frameSize, frameBytes: frameBytes);
             }
                 
-                // Check for padding in order to break out
+            // Check for padding in order to break out
             else if frameBytes[0] == 0 && frameBytes[1] == 0 && frameBytes[2] == 0
             {
-                break
+                break;
             }
             
             // Jump to next frame and move up current position
-            curPosition += frameSize
+            curPosition += frameSize;
         }
     }
     
     
-    private static func extractInfo(bytes: UnsafePointer<Byte>, frameSize: Int, frameBytes: [Byte])
+    private func extractInfo(bytes: UnsafePointer<Byte>, frameSize: Int, frameBytes: [Byte])
     {
-        
-        if bytes.memory == 0x54 // Starts with 'T' (Artist, Title, or Album)
+        let frameOffset = getFrameOffset();
+        if isArtistFrame(frameBytes)
         {
-            // Frame holds text content
-            let content = NSString(bytes: bytes + ID3Tag.FRAME_OFFSET, length: frameSize - ID3Tag.FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
-            
-            if isArtistFrame(frameBytes)
-            {
-                // Store artist
-                tag!.setArtist(content)
-            }
-            else if isTitleFrame(frameBytes)
-            {
-                // Store title
-                tag!.setTitle(content)
-            }
-            else
-            {
-                // Store album
-                tag!.setAlbum(content)
-            }
+            // Store artist
+            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String;
+            tag!.setArtist(content);
         }
-        else if bytes.memory == 0x55 // Starts with 'U' (Lyrics)
+        else if isTitleFrame(frameBytes)
+        {
+            // Store title
+            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String;
+            tag!.setTitle(content);
+        }
+        else if isAlbumFrame(frameBytes)
+        {
+            // Store album
+            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String;
+            tag!.setAlbum(content);
+        }
+        else if isLyricsFrame(frameBytes)
         {
             // Get lyrics
-            let content = NSString(bytes: bytes + ID3Tag.LYRICS_FRAME_OFFSET, length: frameSize - ID3Tag.LYRICS_FRAME_OFFSET, encoding: NSASCIIStringEncoding) as! String
+            let LYRICS_OFFSET = frameOffset + 5;
+            let content = NSString(bytes: bytes + LYRICS_OFFSET, length: frameSize - LYRICS_OFFSET, encoding: NSASCIIStringEncoding) as! String;
             
             // Store the lyrics
-            tag!.setLyrics(content)
+            tag!.setLyrics(content);
         }
-        else // Leaves us with artwork
+        else // Artwork
         {
             // Frame holds artwork
-            let isPNG = bytes[7] != 0x4A // Doesn't equal 'J' for JPG
-            let artData = NSData(bytes: bytes + ID3Tag.ART_FRAME_OFFSET, length: frameSize - ID3Tag.ART_FRAME_OFFSET)
-            tag!.setArtwork(artData, isPNG: isPNG)
+            let JPG_ID: [Byte] = [0xFF, 0xD8, 0xFF, 0xE0];
+            let PNG_ID: [Byte] = [0x89, 0x50, 0x4E, 0x47];
+            
+            var isPNG = true;
+            var ptr = bytes + frameOffset;
+            
+            for _ in 0...frameSize
+            {
+                if (ptr[0] == JPG_ID[0]) && (ptr[1] == JPG_ID[1]) && (ptr[2] == JPG_ID[2]) && (ptr[3] == JPG_ID[3])
+                {
+                    // JPG binary data found
+                    isPNG = false;
+                    break;
+                }
+                else if (ptr[0] == PNG_ID[0]) && (ptr[1] == PNG_ID[1]) && (ptr[2] == PNG_ID[2]) && (ptr[3] == PNG_ID[3])
+                {
+                    // PNG binary data found
+                    break;
+                }
+                
+                // move traversal pointer up
+                ptr += 1;
+            }
+            let artData = NSData(bytes: ptr, length: frameSize - (ptr - bytes));
+            tag!.setArtwork(artData, isPNG: isPNG);
         }
     }
     
     
-    private static func getFrameSize(frameSizeBytes: [Byte]) -> Int
+    private func getFrameSize(framePtr: UnsafePointer<Byte>, offset: Int) -> Int
     {
         // Calculate the size of the frame
-        var size = ID3Tag.FRAME_OFFSET
-        var shift = 2 * BYTE
+        var size = Int(CFSwapInt32HostToBig(UnsafePointer<UInt32>(framePtr + offset).memory));
         
-        for i in 0 ..< 3
+        if self.version == 2
         {
-            size += Int(frameSizeBytes[i]) << shift
-            shift -= BYTE
+            // Extract the first 3 bytes
+            size &= 0x00FFFFFF;
         }
         
         // Return the frame size including the frame header
-        return size
+        return size + getFrameOffset();
     }
     
     
-    private static func getTagSize() -> Int
+    internal func getTagSize() -> Int
     {
-        let ptr = UnsafePointer<Byte>(data!.bytes) + ID3Tag.FRAME_OFFSET
+        let size = CFSwapInt32HostToBig(UnsafePointer<UInt32>(data!.bytes + TagParser.TAG_SIZE_OFFSET).memory);
         
-        var size = 0
-        var shift = 21
+        let b1 = (size & 0x7F000000) >> 3;
+        let b2 = (size & 0x007F0000) >> 2;
+        let b3 = (size & 0x00007F00) >> 1;
+        let b4 =  size & 0x0000007F;
         
-        for i in 0 ..< 4
+        return Int(b1 + b2 + b3 + b4);
+    }
+    
+    
+    private func getFrameOffset() -> Int
+    {
+        if(self.version == 2)
         {
-            size += Int(ptr[i]) << shift
-            shift -= 7
+            return ID3Tag.FRAMES.V2.FRAME_OFFSET;
         }
-        
-        return size
+        else
+        {
+            return ID3Tag.FRAMES.V3.FRAME_OFFSET;
+        }
     }
 }
