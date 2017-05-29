@@ -1,8 +1,11 @@
 # ID3Edit
-### Author: Philip Hardy
-
 ## Description:
 An easy to use Swift framework that edits and retrieves ID3 tag information.
+
+## Important Information:
+There are two projects which perform the same thing. One is in Swift the other in Objective C.
+I recommend building the Objective C project and using that framework. (It will work for both
+Objective C and Swift projects.) In the future, this will be the only project I update!
 
 ## Instructions:
 Drag the framework into your Swift project. Make sure to add to your project's
@@ -62,4 +65,7 @@ catch ID3EditErrors.NotAnMP3
 }
 catch {}
 ```
-...that's it! Pretty simple, right?
+
+## Instructions for Command Line Tools:
+Drag the framework into your project. Make sure to add the path to the 
+framework in Project Settings > Build Settings > Runpath Search Paths
