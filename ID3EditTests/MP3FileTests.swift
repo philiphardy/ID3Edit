@@ -30,115 +30,56 @@ import ID3Edit;
 
 class MP3FileTests: XCTestCase
 {
-
-    override func setUp()
+    func pathFor(mp3: String) -> String
     {
-        super.setUp();
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-    }
-    
-    override func tearDown()
-    {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown();
+        let bundle = Bundle(for: type(of: self));
+        let path = bundle.path(forResource: mp3, ofType: "mp3")!;
+        return path;
     }
     
     func test_init()
     {
-        var noErrorsOccurred = true;
-        do
-        {
-            try MP3File(path: "/Users/Phil/Desktop/What A Year.mp3");
-            try MP3File(path: "/Users/Phil/Desktop/05 Changes.mp3", overwrite: true);
-            
-            try MP3File(data: NSData(contentsOfFile: "/Users/Phil/Desktop/What A Year.mp3"));
-            try MP3File(data: NSData(contentsOfFile: "/Users/Phil/Desktop/05 Changes.mp3"), overwrite: true);
-        }
-        catch
-        {
-            noErrorsOccurred = false;
-        }
-        
-        XCTAssertTrue(noErrorsOccurred);
-        
-        do
-        {
-            try MP3File(path: "/Users/Phil/Desktop/What A Year.mp");
-        }
-        catch
-        {
-            noErrorsOccurred = false;
-        }
-        
-        XCTAssertTrue(!noErrorsOccurred);
+        XCTAssertNoThrow(try MP3File(path: pathFor(mp3: "Jinjer-APlusOrAMinus")))
+        XCTAssertNoThrow(try MP3File(data: NSData(contentsOfFile: pathFor(mp3: "Jinjer-APlusOrAMinus")), overwrite: true))
+        XCTAssertThrowsError(try MP3File(path: "::a wrong path::"))
     }
     
     func test_getArtwork()
     {
-        do
-        {
-            let whatAYear = try MP3File(path: "/Users/Phil/Desktop/What A Year.mp3");
-            let changes = try MP3File(path: "/Users/Phil/Desktop/05 Changes.mp3");
-            let soHigh = try MP3File(path: "/Users/Phil/Desktop/1-09 So High.mp3");
-            
-            whatAYear.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/Big Sean.jpg", atomically: true);
-            changes.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/Tupac.jpg", atomically: true);
-            soHigh.getArtwork()?.TIFFRepresentation?.writeToFile("/Users/Phil/Desktop/Rebelution.jpg", atomically: true);
-        }
-        catch {}
+        let path = URL(fileURLWithPath: NSHomeDirectory() + "/cover.jpg")
+        let mp3 = try! MP3File(path: pathFor(mp3: "Jinjer-APlusOrAMinus"));
+        let artwork = mp3.getArtwork();
+        XCTAssertNotNil(artwork)
+        XCTAssertTrue(artwork!.pngWrite(to: path))
     }
     
     func test_writeFile()
     {
-        do
-        {
-            let whatAYear = try MP3File(path: "/Users/Phil/Desktop/BUV2tVduflPh.128.mp3");
-            
-            whatAYear.setTitle("Tired of talking (A-Trak & Cory Enemy Remix)");
-            whatAYear.setArtist("LEON");
-            whatAYear.setAlbum("Tired of Talking");
-            whatAYear.setLyrics("");
-            whatAYear.setArtwork(NSImage(byReferencingFile: "/Users/Phil/Desktop/artwork.png")!, isPNG: true);
-            whatAYear.setPath("/Users/Phil/Desktop/\(whatAYear.getArtist()) - \(whatAYear.getTitle()) - \(whatAYear.getAlbum()).mp3")
-            try whatAYear.writeTag();
-        }
-        catch {}
+        let mp3 = try! MP3File(path: pathFor(mp3: "Jinjer-APlusOrAMinus-ToBeModified"));
+        mp3.setTitle(title: "A New title");
+        mp3.setArtist(artist: "A New Artist");
+        mp3.setAlbum(album: "A New Album");
+        mp3.setLyrics(lyrics: "A New Lyrics");
+        mp3.setPath(path: NSHomeDirectory() + "/anMp3Modified.mp3")
+        XCTAssertNoThrow(try mp3.writeTag());
     }
     
     func test_getLyrics()
     {
-        do
-        {
-            let whatAYear = try MP3File(path: "/Users/Phil/Desktop/What A Year.mp3");
-            let changes = try MP3File(path: "/Users/Phil/Desktop/05 Changes.mp3");
-            
-            print(whatAYear.getLyrics());
-            XCTAssertEqual(changes.getLyrics(), "THIS IS A TEST");
-        }
-        catch {}
+        let mp3 = try! MP3File(path: pathFor(mp3: "Jinjer-APlusOrAMinus"));
+        XCTAssertEqual(mp3.getLyrics(), "Lyrics");
     }
 
     func test_getAlbum()
     {
-        do
-        {
-            let whatAYear = try MP3File(path: "/Users/Phil/Desktop/What A Year.mp3");
-            let changes = try MP3File(path: "/Users/Phil/Desktop/05 Changes.mp3");
-            XCTAssertEqual(whatAYear.getAlbum(), "What A Year");
-            XCTAssertEqual(changes.getAlbum(), "");
-        }
-        catch {}
+        let mp3 = try! MP3File(path: pathFor(mp3: "Jinjer-APlusOrAMinus"));
+        XCTAssertEqual(mp3.getAlbum(), "Cloud Factory");
     }
     
     func test_getArtist()
     {
-        do
-        {
-            let whatAYear = try MP3File(path: "/Users/Phil/Desktop/What A Year.mp3");
-            let changes = try MP3File(path: "/Users/Phil/Desktop/05 Changes.mp3");
-            XCTAssertEqual(whatAYear.getArtist(), "Big Sean");
-            XCTAssertEqual(changes.getArtist(), "Tupac");
-        }
-        catch {}
+        let mp3 = try! MP3File(path: pathFor(mp3: "Jinjer-APlusOrAMinus"));
+        XCTAssertEqual(mp3.getArtist(), "Jinjer");
     }
 }
+

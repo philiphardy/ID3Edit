@@ -25,7 +25,7 @@
 //    SOFTWARE.
 //
 
-public enum ID3EditErrors: ErrorType
+public enum ID3EditErrors: Error
 {
     case NotAnMP3;
     case FileDoesNotExist;

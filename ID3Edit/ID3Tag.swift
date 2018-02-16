@@ -83,7 +83,8 @@ internal class ID3Tag
     {
         if artwork.art != nil
         {
-            return NSImage(data: artwork.art!);
+            let image = NSImage(data: artwork.art! as Data);
+            return image;
         }
         
         return nil
@@ -113,37 +114,36 @@ internal class ID3Tag
     
     internal func setArtist(artist: String)
     {
-        self.artist = Toolbox.removePadding(artist);
+        self.artist = Toolbox.removePadding(str: artist);
     }
     
     internal func setTitle(title: String)
     {
-        self.title = Toolbox.removePadding(title);
+        self.title = Toolbox.removePadding(str: title);
     }
     
     internal func setAlbum(album: String)
     {
-        self.album = Toolbox.removePadding(album);
+        self.album = Toolbox.removePadding(str: album);
     }
     
     internal func setLyrics(lyrics: String)
     {
-        self.lyrics = Toolbox.removePadding(lyrics);
+        self.lyrics = Toolbox.removePadding(str: lyrics);
     }
     
     internal func setArtwork(artwork: NSImage, isPNG: Bool)
     {
-        let imgRep = NSBitmapImageRep(data: artwork.TIFFRepresentation!);
+        let imgRep = NSBitmapImageRep(data: artwork.tiffRepresentation!);
         
         if isPNG
         {
-            self.artwork.art = imgRep?.representationUsingType(.NSPNGFileType , properties: [NSImageCompressionFactor: 0.5]);
+            self.artwork.art = imgRep?.representation(using: .png , properties: [NSBitmapImageRep.PropertyKey.compressionFactor: 0.5])! as NSData?;
         }
         else
         {
-            self.artwork.art = imgRep?.representationUsingType(.NSJPEGFileType, properties: [NSImageCompressionFactor: 0.5]);
+            self.artwork.art = imgRep?.representation(using: .jpeg, properties: [NSBitmapImageRep.PropertyKey.compressionFactor: 0.5]) as NSData?;
         }
-        
         
         self.artwork.isPNG = isPNG;
     }
@@ -159,39 +159,39 @@ internal class ID3Tag
     {
         var content: [Byte] = [];
         
-        if infoExists(artist)
+        if infoExists(category: artist)
         {
             // Create the artist frame
-            let frame = createFrame(FRAMES.V2.ARTIST, str: getArtist());
-            content.appendContentsOf(frame);
+            let frame = createFrame(frame: FRAMES.V2.ARTIST, str: getArtist());
+            content.append(contentsOf: frame);
         }
         
-        if infoExists(title)
+        if infoExists(category: title)
         {
             // Create the title frame
-            let frame = createFrame(FRAMES.V2.TITLE, str: getTitle());
-            content.appendContentsOf(frame);
+            let frame = createFrame(frame: FRAMES.V2.TITLE, str: getTitle());
+            content.append(contentsOf: frame);
         }
         
-        if infoExists(album)
+        if infoExists(category: album)
         {
             // Create the album frame
-            let frame = createFrame(FRAMES.V2.ALBUM, str: getAlbum());
-            content.appendContentsOf(frame);
+            let frame = createFrame(frame: FRAMES.V3.ALBUM, str: getAlbum());
+            content.append(contentsOf: frame);
         }
         
-        if infoExists(lyrics)
+        if infoExists(category: lyrics)
         {
             // Create the lyrics frame
             let frame = createLyricFrame();
-            content.appendContentsOf(frame);
+            content.append(contentsOf: frame);
         }
         
         if artwork.art != nil
         {
             // Create the artwork frame
             let frame = createArtFrame();
-            content.appendContentsOf(frame);
+            content.append(contentsOf: frame);
         }
         
         if content.count == 0
@@ -202,8 +202,8 @@ internal class ID3Tag
         }
         
         // Make the tag header
-        var header = createTagHeader(content.count);
-        header.appendContentsOf(content);
+        var header = createTagHeader(contentSize: content.count);
+        header.append(contentsOf: content);
         
         return header;
     }
@@ -217,7 +217,7 @@ internal class ID3Tag
         if cont[0] != 0
         {
             // Add padding to the beginning
-            cont.insert(0, atIndex: 0);
+            cont.insert(0, at: 0);
         }
         
         if cont.last != 0
@@ -228,12 +228,12 @@ internal class ID3Tag
         
         // Add the size to the byte array
         var int = UInt32(cont.count);
-        var size = Toolbox.toByteArray(&int);
+        var size = Toolbox.toByteArray(num: &int);
         size.removeFirst();
         
         // Create the frame
-        bytes.appendContentsOf(size);
-        bytes.appendContentsOf(cont);
+        bytes.append(contentsOf: size);
+        bytes.append(contentsOf: cont);
         
         // Return the completed frame
         return bytes;
@@ -249,13 +249,13 @@ internal class ID3Tag
         let content = [Byte](getLyrics().utf8);
         
         var size = UInt32(content.count + encoding.count);
-        var sizeArr = Toolbox.toByteArray(&size);
+        var sizeArr = Toolbox.toByteArray(num: &size);
         sizeArr.removeFirst();
         
         // Form the header
-        bytes.appendContentsOf(sizeArr);
-        bytes.appendContentsOf(encoding);
-        bytes.appendContentsOf(content);
+        bytes.append(contentsOf: sizeArr);
+        bytes.append(contentsOf: encoding);
+        bytes.append(contentsOf: content);
         
         return bytes;
     }
@@ -266,8 +266,8 @@ internal class ID3Tag
         var bytes: [Byte] = FRAMES.V2.HEADER;
         
         // Add the size to the byte array
-        var formattedSize = UInt32(calcSize(contentSize));
-        bytes.appendContentsOf(Toolbox.toByteArray(&formattedSize));
+        var formattedSize = UInt32(calcSize(size: contentSize));
+        bytes.append(contentsOf: Toolbox.toByteArray(num: &formattedSize));
         
         // Return the completed tag header
         return bytes;
@@ -280,26 +280,25 @@ internal class ID3Tag
         
         // Calculate size
         var size = UInt32(artwork.art!.length + 6);
-        var sizeArr = Toolbox.toByteArray(&size);
+        var sizeArr = Toolbox.toByteArray(num: &size);
         sizeArr.removeFirst();
         
-        bytes.appendContentsOf(sizeArr);
+        bytes.append(contentsOf: sizeArr);
         
         // Append encoding
-        if artwork.isPNG!
+        if(artwork.isPNG!)
         {
-            // PNG encoding
-            bytes.appendContentsOf([0x00, 0x50, 0x4E, 0x47, 0x00 ,0x00]);
+            bytes.append(contentsOf: [0x00, 0x50, 0x4E, 0x47, 0x00 ,0x00]);
         }
         else
         {
-            // JPG encoding
-            bytes.appendContentsOf([0x00, 0x4A, 0x50, 0x47, 0x00 ,0x00]);
+            bytes.append(contentsOf: [0x00, 0x4A, 0x50, 0x47, 0x00 ,0x00]);
         }
         
         // Add artwork data
-        bytes.appendContentsOf(Array(UnsafeBufferPointer(start: UnsafePointer<Byte>(artwork.art!.bytes), count: artwork.art!.length)));
-        
+        let artworkData = Array(UnsafeBufferPointer(start: artwork.art!.bytes.assumingMemoryBound(to: Byte.self), count: artwork.art!.length))
+        bytes.append(contentsOf: artworkData);
+
         return bytes;
     }
     

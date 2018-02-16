@@ -1,10 +1,10 @@
 //
-//  ID3TagTests.swift
+//  NSImage+WriteToFile
 //  ID3Edit
 //
 //    MIT License
 //
-//    Copyright (c) 2016 Philip Hardy
+//    Copyright (c) 2018 Fabrizio Duroni
 //
 //    Permission is hereby granted, free of charge, to any person obtaining a copy
 //    of this software and associated documentation files (the "Software"), to deal
@@ -25,18 +25,24 @@
 //    SOFTWARE.
 //
 
-import XCTest
+import Foundation
 
-class ID3TagTests: XCTestCase
-{
-
-    override func setUp() {
-        super.setUp();
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+public extension NSImage {
+    public var pngData: Data? {
+        guard let tiffRepresentation = tiffRepresentation,
+            let bitmapImage = NSBitmapImageRep(data: tiffRepresentation) else {
+                return nil
+        }
+        return bitmapImage.representation(using: .jpeg, properties: [:])
     }
     
-    override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-        super.tearDown();
+    public func pngWrite(to url: URL, options: Data.WritingOptions = .atomic) -> Bool {
+        do {
+            try pngData?.write(to: url, options: options)
+            return true
+        } catch {
+            print(error)
+            return false
+        }
     }
 }

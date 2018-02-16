@@ -29,22 +29,14 @@ typealias Byte = UInt8;
 
 internal class Toolbox
 {
-    internal static func toByteArray<T>(inout num: T) -> [Byte]
+    internal static func toByteArray<T>(num: inout T) -> [Byte]
     {
-        // Get pointer to number
-        let ptr = withUnsafePointer(&num) {
-            UnsafePointer<Byte>($0);
+        let bytes = withUnsafePointer(to: &num) {
+            $0.withMemoryRebound(to: Byte.self, capacity: MemoryLayout<T>.size) {
+                Array(UnsafeBufferPointer(start: $0, count: MemoryLayout<T>.size))
+            }
         }
-        
-        // The array to store the bytes
-        var bytes: [Byte] = [];
-        
-        for i in (0 ..< sizeof(T)).reverse()
-        {
-            bytes.append(ptr[i]);
-        }
-        
-        return bytes;
+        return bytes.reversed()
     }
     
     internal static func removePadding(str: String) -> String
@@ -63,6 +55,6 @@ internal class Toolbox
             buffer.removeLast();
         }
         
-        return NSString(bytes: UnsafePointer<Byte>(buffer), length: buffer.count, encoding: NSASCIIStringEncoding) as! String;
+        return NSString(bytes: UnsafePointer<Byte>(buffer), length: buffer.count, encoding: String.Encoding.ascii.rawValue)! as String;
     }
 }
