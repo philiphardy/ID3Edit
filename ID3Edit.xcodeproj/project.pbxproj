@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		45A90321203773210085DFB4 /* Jinjer-APlusOrAMinus.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45A90320203773210085DFB4 /* Jinjer-APlusOrAMinus.mp3 */; };
+		45304622203870CC00BDC0B8 /* example-cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45304620203870CC00BDC0B8 /* example-cover.jpg */; };
+		45304623203870CC00BDC0B8 /* example.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45304621203870CC00BDC0B8 /* example.mp3 */; };
+		45304625203871A600BDC0B8 /* example-to-be-modified.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */; };
 		45A90323203796A30085DFB4 /* NSImage+WriteToFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */; };
-		45A90325203799460085DFB4 /* Jinjer-APlusOrAMinus-ToBeModified.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45A90324203799460085DFB4 /* Jinjer-APlusOrAMinus-ToBeModified.mp3 */; };
 		4A1804041C3DED53000E1FF2 /* ID3Edit.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A1804031C3DED53000E1FF2 /* ID3Edit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */; };
 		4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1804321C3DF496000E1FF2 /* Errors.swift */; };
@@ -33,9 +34,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		45A90320203773210085DFB4 /* Jinjer-APlusOrAMinus.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Jinjer-APlusOrAMinus.mp3"; sourceTree = "<group>"; };
+		45304620203870CC00BDC0B8 /* example-cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "example-cover.jpg"; sourceTree = "<group>"; };
+		45304621203870CC00BDC0B8 /* example.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = example.mp3; sourceTree = "<group>"; };
+		45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "example-to-be-modified.mp3"; sourceTree = "<group>"; };
 		45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+WriteToFile.swift"; sourceTree = "<group>"; };
-		45A90324203799460085DFB4 /* Jinjer-APlusOrAMinus-ToBeModified.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Jinjer-APlusOrAMinus-ToBeModified.mp3"; sourceTree = "<group>"; };
 		4A1804001C3DED53000E1FF2 /* ID3Edit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ID3Edit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A1804031C3DED53000E1FF2 /* ID3Edit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ID3Edit.h; sourceTree = "<group>"; };
 		4A1804051C3DED53000E1FF2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -106,8 +108,9 @@
 		4A3957641D0E0C400064BF7C /* ID3EditTests */ = {
 			isa = PBXGroup;
 			children = (
-				45A90324203799460085DFB4 /* Jinjer-APlusOrAMinus-ToBeModified.mp3 */,
-				45A90320203773210085DFB4 /* Jinjer-APlusOrAMinus.mp3 */,
+				45304620203870CC00BDC0B8 /* example-cover.jpg */,
+				45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */,
+				45304621203870CC00BDC0B8 /* example.mp3 */,
 				4A3957701D0E10AE0064BF7C /* TagParserTests.swift */,
 				4A3957721D0E10C50064BF7C /* MP3FileTests.swift */,
 				4A3957671D0E0C400064BF7C /* Info.plist */,
@@ -215,8 +218,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				45A90321203773210085DFB4 /* Jinjer-APlusOrAMinus.mp3 in Resources */,
-				45A90325203799460085DFB4 /* Jinjer-APlusOrAMinus-ToBeModified.mp3 in Resources */,
+				45304623203870CC00BDC0B8 /* example.mp3 in Resources */,
+				45304622203870CC00BDC0B8 /* example-cover.jpg in Resources */,
+				45304625203871A600BDC0B8 /* example-to-be-modified.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

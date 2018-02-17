@@ -34,13 +34,13 @@ class TagParserTests: XCTestCase
     
     override func setUp() {
         let bundle = Bundle(for: type(of: self))
-        let path = bundle.path(forResource: "Jinjer-APlusOrAMinus", ofType: "mp3")!
+        let path = bundle.path(forResource: "example", ofType: "mp3")!
         tagParser = TagParser(data: NSData(contentsOfFile: path), tag: ID3Tag());
     }
 
     func test_getTagSize()
     {
-        XCTAssertEqual(tagParser.getTagSize(), 0x26257);
+        XCTAssertEqual(tagParser.getTagSize(), 0xA503);
     }
     
     func test_isTagPresent()

@@ -176,7 +176,7 @@ internal class ID3Tag
         if infoExists(category: album)
         {
             // Create the album frame
-            let frame = createFrame(frame: FRAMES.V3.ALBUM, str: getAlbum());
+            let frame = createFrame(frame: FRAMES.V2.ALBUM, str: getAlbum());
             content.append(contentsOf: frame);
         }
         
