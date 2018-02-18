@@ -266,7 +266,8 @@ internal class ID3Tag
         var bytes: [Byte] = FRAMES.V2.HEADER;
         
         // Add the size to the byte array
-        var formattedSize = UInt32(calcSize(size: contentSize));
+        var formattedSize = UInt32(format(size: contentSize));
+
         bytes.append(contentsOf: Toolbox.toByteArray(num: &formattedSize));
         
         // Return the completed tag header
@@ -288,11 +289,11 @@ internal class ID3Tag
         // Append encoding
         if(artwork.isPNG!)
         {
-            bytes.append(contentsOf: [0x00, 0x50, 0x4E, 0x47, 0x00 ,0x00]);
+            bytes.append(contentsOf: [0x00, 0x50, 0x4E, 0x47, 0x03 ,0x00]);
         }
         else
         {
-            bytes.append(contentsOf: [0x00, 0x4A, 0x50, 0x47, 0x00 ,0x00]);
+            bytes.append(contentsOf: [0x00, 0x4A, 0x50, 0x47, 0x03 ,0x00]);
         }
         
         // Add artwork data
@@ -302,43 +303,18 @@ internal class ID3Tag
         return bytes;
     }
     
-    
-    // MARK: - Helper Methods
-    private func calcSize(size: Int) -> Int
-    {
-        // Holds the size of the tag
-        var newSize = 0;
-        
-        for i in 0 ..< 4
-        {
-            // Get the bytes from size
-            let shift = i * 8;
-            let mask = 0xFF << shift;
-            
-            
-            // Shift the byte down in order to use the mask
-            var byte = (size & mask) >> shift;
-            
-            var oMask: Byte = 0x80;
-            for _ in 0 ..< i
-            {
-                // Create the overflow mask
-                oMask >>= 1;
-                oMask += 0x80;
-            }
-            
-            // The left side of the byte
-            let overflow = Byte(byte) & oMask;
-            
-            // The right side of the byte
-            let untouched = Byte(byte) & ~oMask;
-            
-            // Store the byte
-            byte = ((Int(overflow) << 1) + Int(untouched)) << (shift + i);
-            newSize += byte;
+    private func format(size: Int) -> Int {
+        var out:Int = 0
+        var mask:Int = 0x7F
+        var currentValue = size
+        while (mask != 0x7FFFFFFF) {
+            out = currentValue & ~mask;
+            out = out << 1;
+            out = out | currentValue & mask;
+            mask = ((mask + 1) << 8) - 1;
+            currentValue = out;
         }
-        
-        return newSize;
+        return out;
     }
     
     private func infoExists(category: String) -> Bool

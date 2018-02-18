@@ -57,7 +57,7 @@ class MP3FileTests: XCTestCase
         mp3.setTitle(title: "A New title");
         mp3.setArtist(artist: "A New Artist");
         mp3.setAlbum(album: "A New Album");
-        mp3.setLyrics(lyrics: "A New Lyrics");
+        //mp3.setLyrics(lyrics: "A New Lyrics");
         mp3.setArtwork(artwork: NSImage(byReferencingFile: pathFor(name: "example-cover", fileType: "jpg"))!, isPNG: false);
         mp3.setPath(path: NSHomeDirectory() + "/mp3-modified.mp3")
         XCTAssertNoThrow(try mp3.writeTag());
