@@ -51,7 +51,12 @@ internal class TagParser
         if data!.length >= 4
         {
             version = data?.bytes.assumingMemoryBound(to: Byte.self)[TagParser.VERSION_OFFSET];
-            //version = UnsafePointer<Byte>(data!.bytes)[TagParser.VERSION_OFFSET];
+            if (version != 2 && version != 3) {
+                version  = 3
+            }
+            tag.version = version
+        } else {
+            tag.version = 3
         }
     }
     
@@ -153,7 +158,6 @@ internal class TagParser
         let tagSize = getTagSize();
         // Get the tag
         let ptr = data!.bytes.assumingMemoryBound(to: Byte.self) + ID3Tag.TAG_OFFSET;
-        //let ptr = UnsafePointer<Byte>(data!.bytes) + ID3Tag.TAG_OFFSET;
 
         // Loop through all the frames
         var curPosition = 0;

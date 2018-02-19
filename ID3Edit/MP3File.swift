@@ -89,7 +89,7 @@ public class MP3File
         {
             tag = ID3Tag();
             parser = TagParser(data: data, tag: tag);
-            
+
             if !overwrite
             {
                 parser.analyzeData();

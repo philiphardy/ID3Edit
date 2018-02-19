@@ -10,6 +10,8 @@
 		45304622203870CC00BDC0B8 /* example-cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45304620203870CC00BDC0B8 /* example-cover.jpg */; };
 		45304623203870CC00BDC0B8 /* example.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45304621203870CC00BDC0B8 /* example.mp3 */; };
 		45304625203871A600BDC0B8 /* example-to-be-modified.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */; };
+		4574F2CF2039ED76003624CB /* example-v23.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4574F2CE2039ED76003624CB /* example-v23.mp3 */; };
+		4574F2D3203A172C003624CB /* example-cover-png.png in Resources */ = {isa = PBXBuildFile; fileRef = 4574F2D2203A172C003624CB /* example-cover-png.png */; };
 		45A90323203796A30085DFB4 /* NSImage+WriteToFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */; };
 		4A1804041C3DED53000E1FF2 /* ID3Edit.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A1804031C3DED53000E1FF2 /* ID3Edit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */; };
@@ -37,6 +39,8 @@
 		45304620203870CC00BDC0B8 /* example-cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "example-cover.jpg"; sourceTree = "<group>"; };
 		45304621203870CC00BDC0B8 /* example.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = example.mp3; sourceTree = "<group>"; };
 		45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "example-to-be-modified.mp3"; sourceTree = "<group>"; };
+		4574F2CE2039ED76003624CB /* example-v23.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "example-v23.mp3"; sourceTree = "<group>"; };
+		4574F2D2203A172C003624CB /* example-cover-png.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "example-cover-png.png"; sourceTree = "<group>"; };
 		45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+WriteToFile.swift"; sourceTree = "<group>"; };
 		4A1804001C3DED53000E1FF2 /* ID3Edit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ID3Edit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A1804031C3DED53000E1FF2 /* ID3Edit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ID3Edit.h; sourceTree = "<group>"; };
@@ -108,8 +112,10 @@
 		4A3957641D0E0C400064BF7C /* ID3EditTests */ = {
 			isa = PBXGroup;
 			children = (
+				4574F2D2203A172C003624CB /* example-cover-png.png */,
 				45304620203870CC00BDC0B8 /* example-cover.jpg */,
 				45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */,
+				4574F2CE2039ED76003624CB /* example-v23.mp3 */,
 				45304621203870CC00BDC0B8 /* example.mp3 */,
 				4A3957701D0E10AE0064BF7C /* TagParserTests.swift */,
 				4A3957721D0E10C50064BF7C /* MP3FileTests.swift */,
@@ -218,7 +224,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4574F2D3203A172C003624CB /* example-cover-png.png in Resources */,
 				45304623203870CC00BDC0B8 /* example.mp3 in Resources */,
+				4574F2CF2039ED76003624CB /* example-v23.mp3 in Resources */,
 				45304622203870CC00BDC0B8 /* example-cover.jpg in Resources */,
 				45304625203871A600BDC0B8 /* example-to-be-modified.mp3 in Resources */,
 			);

@@ -30,6 +30,7 @@ import Foundation;
 internal class ID3Tag
 {
     typealias Byte = UInt8;
+    var version: Byte?;
     
     // MARK: - Structs
     private struct AlbumArtwork
@@ -162,21 +163,21 @@ internal class ID3Tag
         if infoExists(category: artist)
         {
             // Create the artist frame
-            let frame = createFrame(frame: FRAMES.V2.ARTIST, str: getArtist());
+            let frame = createFrame(frame: version == 3 ? FRAMES.V3.ARTIST : FRAMES.V2.ARTIST, str: getArtist());
             content.append(contentsOf: frame);
         }
         
         if infoExists(category: title)
         {
             // Create the title frame
-            let frame = createFrame(frame: FRAMES.V2.TITLE, str: getTitle());
+            let frame = createFrame(frame: version == 3 ? FRAMES.V3.TITLE : FRAMES.V2.TITLE, str: getTitle());
             content.append(contentsOf: frame);
         }
         
         if infoExists(category: album)
         {
             // Create the album frame
-            let frame = createFrame(frame: FRAMES.V2.ALBUM, str: getAlbum());
+            let frame = createFrame(frame: version == 3 ? FRAMES.V3.ALBUM : FRAMES.V2.ALBUM, str: getAlbum());
             content.append(contentsOf: frame);
         }
         
@@ -190,8 +191,8 @@ internal class ID3Tag
         if artwork.art != nil
         {
             // Create the artwork frame
-            let frame = createArtFrame();
-            content.append(contentsOf: frame);
+            let frameFront = createArtFrame(type: 0x03);
+            content.append(contentsOf: frameFront);
         }
         
         if content.count == 0
@@ -208,20 +209,16 @@ internal class ID3Tag
         return header;
     }
     
-    private func createFrame(frame: [Byte], str: String) -> [Byte]
-    {
+    private func createFrame(frame: [Byte], str: String) -> [Byte] {
         var bytes: [Byte] = frame;
-        
         var cont = [Byte](str.utf8);
         
-        if cont[0] != 0
-        {
+        if cont[0] != 0 {
             // Add padding to the beginning
             cont.insert(0, at: 0);
         }
         
-        if cont.last != 0
-        {
+        if (cont.last != 0) {
             // Add padding to the end
             cont.append(0);
         }
@@ -229,10 +226,18 @@ internal class ID3Tag
         // Add the size to the byte array
         var int = UInt32(cont.count);
         var size = Toolbox.toByteArray(num: &int);
-        size.removeFirst();
+        
+        if version != 3 {
+            size.removeFirst();
+        }
         
         // Create the frame
         bytes.append(contentsOf: size);
+        if (version == 3) {
+            //Flags (not set)
+            bytes.append(0)
+            bytes.append(0)
+        }
         bytes.append(contentsOf: cont);
         
         // Return the completed frame
@@ -263,7 +268,7 @@ internal class ID3Tag
     
     private func createTagHeader(contentSize: Int) -> [Byte]
     {
-        var bytes: [Byte] = FRAMES.V2.HEADER;
+        var bytes: [Byte] = version == 3 ? FRAMES.V3.HEADER : FRAMES.V2.HEADER;
         
         // Add the size to the byte array
         var formattedSize = UInt32(format(size: contentSize));
@@ -275,25 +280,37 @@ internal class ID3Tag
     }
     
     
-    private func createArtFrame() -> [Byte]
-    {
-        var bytes: [Byte] = FRAMES.V2.ARTWORK;
-        
+    private func createArtFrame(type: Byte) -> [Byte] {
+        var bytes: [Byte] = version == 3 ? FRAMES.V3.ARTWORK : FRAMES.V2.ARTWORK;
         // Calculate size
-        var size = UInt32(artwork.art!.length + 6);
+        var size = UInt32(artwork.art!.length + (version == 3 ? (artwork.isPNG! ? 13 : 14) : 6));
         var sizeArr = Toolbox.toByteArray(num: &size);
-        sizeArr.removeFirst();
+        
+        if (version != 3) {
+            sizeArr.removeFirst();
+        }
         
         bytes.append(contentsOf: sizeArr);
         
-        // Append encoding
-        if(artwork.isPNG!)
-        {
-            bytes.append(contentsOf: [0x00, 0x50, 0x4E, 0x47, 0x03 ,0x00]);
+        if (version == 3) {
+            //Flags (not set)
+            bytes.append(0)
+            bytes.append(0)
         }
-        else
-        {
-            bytes.append(contentsOf: [0x00, 0x4A, 0x50, 0x47, 0x03 ,0x00]);
+        
+        // Append encoding
+        if(artwork.isPNG!) {
+            if (version == 3) {
+                bytes.append(contentsOf: [0x00, 0x69, 0x6D, 0x61, 0x67, 0x65, 0x2F, 0x70, 0x6E, 0x67, 0x00, type, 0x00]);
+            } else {
+                bytes.append(contentsOf: [0x00, 0x50, 0x4E, 0x47, type, 0x00]);
+            }
+        } else {
+            if (version == 3) {
+                bytes.append(contentsOf: [0x00, 0x69, 0x6D, 0x61, 0x67, 0x65, 0x2F, 0x6A, 0x70, 0x65, 0x67, 0x00, type, 0x00]);
+            } else {
+                bytes.append(contentsOf: [0x00, 0x4A, 0x50, 0x47, type, 0x00]);
+            }
         }
         
         // Add artwork data

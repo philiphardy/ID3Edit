@@ -51,15 +51,32 @@ class MP3FileTests: XCTestCase
         XCTAssertTrue(artwork!.pngWrite(to: URL(fileURLWithPath: NSHomeDirectory() + "/cover.jpg")))
     }
     
-    func test_writeFile()
-    {
+    func testReadID3v22tag() {
+        let mp3 = try! MP3File(path: pathFor(name: "example", fileType: "mp3"))
+        XCTAssertEqual(mp3.getTitle(), "example song")
+        XCTAssertEqual(mp3.getAlbum(), "example album")
+        XCTAssertEqual(mp3.getArtist(), "example artist")
+    }
+    
+    func testWriteID3withJpg() {
         let mp3 = try! MP3File(path: pathFor(name: "example-to-be-modified", fileType: "mp3"));
         mp3.setTitle(title: "A New title");
         mp3.setArtist(artist: "A New Artist");
         mp3.setAlbum(album: "A New Album");
         //mp3.setLyrics(lyrics: "A New Lyrics");
         mp3.setArtwork(artwork: NSImage(byReferencingFile: pathFor(name: "example-cover", fileType: "jpg"))!, isPNG: false);
-        mp3.setPath(path: NSHomeDirectory() + "/mp3-modified.mp3")
+        mp3.setPath(path: NSHomeDirectory() + "/mp3-modified-v3-jpg.mp3")
+        XCTAssertNoThrow(try mp3.writeTag());
+    }
+    
+    func testWriteid3withPng() {
+        let mp3 = try! MP3File(path: pathFor(name: "example-to-be-modified", fileType: "mp3"));
+        mp3.setTitle(title: "A New title");
+        mp3.setArtist(artist: "A New Artist");
+        mp3.setAlbum(album: "A New Album");
+        //mp3.setLyrics(lyrics: "A New Lyrics");
+        mp3.setArtwork(artwork: NSImage(byReferencingFile: pathFor(name: "example-cover-png", fileType: "png"))!, isPNG: true);
+        mp3.setPath(path: NSHomeDirectory() + "/mp3-modified-v3-png.mp3")
         XCTAssertNoThrow(try mp3.writeTag());
     }
     
