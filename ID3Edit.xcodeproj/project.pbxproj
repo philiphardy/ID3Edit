@@ -7,6 +7,12 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		45304622203870CC00BDC0B8 /* example-cover.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 45304620203870CC00BDC0B8 /* example-cover.jpg */; };
+		45304623203870CC00BDC0B8 /* example.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45304621203870CC00BDC0B8 /* example.mp3 */; };
+		45304625203871A600BDC0B8 /* example-to-be-modified.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */; };
+		4574F2CF2039ED76003624CB /* example-v23.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4574F2CE2039ED76003624CB /* example-v23.mp3 */; };
+		4574F2D3203A172C003624CB /* example-cover-png.png in Resources */ = {isa = PBXBuildFile; fileRef = 4574F2D2203A172C003624CB /* example-cover-png.png */; };
+		45A90323203796A30085DFB4 /* NSImage+WriteToFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */; };
 		4A1804041C3DED53000E1FF2 /* ID3Edit.h in Headers */ = {isa = PBXBuildFile; fileRef = 4A1804031C3DED53000E1FF2 /* ID3Edit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A18040B1C3DEEC4000E1FF2 /* MP3File.swift */; };
 		4A1804331C3DF496000E1FF2 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1804321C3DF496000E1FF2 /* Errors.swift */; };
@@ -17,7 +23,6 @@
 		4A39576F1D0E10890064BF7C /* ToolboxTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A39576E1D0E10890064BF7C /* ToolboxTests.swift */; };
 		4A3957711D0E10AE0064BF7C /* TagParserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957701D0E10AE0064BF7C /* TagParserTests.swift */; };
 		4A3957731D0E10C50064BF7C /* MP3FileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957721D0E10C50064BF7C /* MP3FileTests.swift */; };
-		4A3957751D0E10CF0064BF7C /* ID3TagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3957741D0E10CF0064BF7C /* ID3TagTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,6 +36,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		45304620203870CC00BDC0B8 /* example-cover.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "example-cover.jpg"; sourceTree = "<group>"; };
+		45304621203870CC00BDC0B8 /* example.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = example.mp3; sourceTree = "<group>"; };
+		45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "example-to-be-modified.mp3"; sourceTree = "<group>"; };
+		4574F2CE2039ED76003624CB /* example-v23.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "example-v23.mp3"; sourceTree = "<group>"; };
+		4574F2D2203A172C003624CB /* example-cover-png.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "example-cover-png.png"; sourceTree = "<group>"; };
+		45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSImage+WriteToFile.swift"; sourceTree = "<group>"; };
 		4A1804001C3DED53000E1FF2 /* ID3Edit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ID3Edit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4A1804031C3DED53000E1FF2 /* ID3Edit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ID3Edit.h; sourceTree = "<group>"; };
 		4A1804051C3DED53000E1FF2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -44,7 +55,6 @@
 		4A39576E1D0E10890064BF7C /* ToolboxTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolboxTests.swift; sourceTree = "<group>"; };
 		4A3957701D0E10AE0064BF7C /* TagParserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TagParserTests.swift; sourceTree = "<group>"; };
 		4A3957721D0E10C50064BF7C /* MP3FileTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MP3FileTests.swift; sourceTree = "<group>"; };
-		4A3957741D0E10CF0064BF7C /* ID3TagTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ID3TagTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +104,7 @@
 				4A36BFC91C4317F100E34BBD /* ID3Tag.swift */,
 				4A39575C1D0E07B60064BF7C /* Toolbox.swift */,
 				4A1804321C3DF496000E1FF2 /* Errors.swift */,
+				45A90322203796A30085DFB4 /* NSImage+WriteToFile.swift */,
 			);
 			path = ID3Edit;
 			sourceTree = "<group>";
@@ -101,9 +112,13 @@
 		4A3957641D0E0C400064BF7C /* ID3EditTests */ = {
 			isa = PBXGroup;
 			children = (
+				4574F2D2203A172C003624CB /* example-cover-png.png */,
+				45304620203870CC00BDC0B8 /* example-cover.jpg */,
+				45304624203871A600BDC0B8 /* example-to-be-modified.mp3 */,
+				4574F2CE2039ED76003624CB /* example-v23.mp3 */,
+				45304621203870CC00BDC0B8 /* example.mp3 */,
 				4A3957701D0E10AE0064BF7C /* TagParserTests.swift */,
 				4A3957721D0E10C50064BF7C /* MP3FileTests.swift */,
-				4A3957741D0E10CF0064BF7C /* ID3TagTests.swift */,
 				4A3957671D0E0C400064BF7C /* Info.plist */,
 				4A39576E1D0E10890064BF7C /* ToolboxTests.swift */,
 			);
@@ -167,7 +182,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0730;
-				LastUpgradeCheck = 0720;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Hardy Creations";
 				TargetAttributes = {
 					4A1803FF1C3DED52000E1FF2 = {
@@ -209,6 +224,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4574F2D3203A172C003624CB /* example-cover-png.png in Resources */,
+				45304623203870CC00BDC0B8 /* example.mp3 in Resources */,
+				4574F2CF2039ED76003624CB /* example-v23.mp3 in Resources */,
+				45304622203870CC00BDC0B8 /* example-cover.jpg in Resources */,
+				45304625203871A600BDC0B8 /* example-to-be-modified.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +244,7 @@
 				4A18040C1C3DEEC4000E1FF2 /* MP3File.swift in Sources */,
 				4A36BFC51C422AF000E34BBD /* TagParser.swift in Sources */,
 				4A36BFCA1C4317F100E34BBD /* ID3Tag.swift in Sources */,
+				45A90323203796A30085DFB4 /* NSImage+WriteToFile.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -234,7 +255,6 @@
 				4A3957731D0E10C50064BF7C /* MP3FileTests.swift in Sources */,
 				4A39576F1D0E10890064BF7C /* ToolboxTests.swift in Sources */,
 				4A3957711D0E10AE0064BF7C /* TagParserTests.swift in Sources */,
-				4A3957751D0E10CF0064BF7C /* ID3TagTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,13 +277,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -291,6 +319,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -304,13 +333,21 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "-";
@@ -330,6 +367,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_VERSION = 4.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -352,6 +391,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -371,6 +411,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hardycreations.ID3Edit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -383,6 +424,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hardycreations.ID3EditTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -395,6 +437,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.hardycreations.ID3EditTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -426,6 +469,7 @@
 				4A39576D1D0E0C400064BF7C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

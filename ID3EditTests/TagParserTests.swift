@@ -30,29 +30,21 @@ import XCTest;
 
 class TagParserTests: XCTestCase
 {
+    private var tagParser: TagParser!
     
-    let whatAYearParser = TagParser(data: NSData(contentsOfFile: "/Users/Phil/Desktop/What A Year.mp3"), tag: ID3Tag());
-    let changesParser = TagParser(data: NSData(contentsOfFile: "/Users/Phil/Desktop/05 Changes.mp3")!, tag: ID3Tag());
-
-    override func setUp()
-    {
-        super.setUp();
-    }
-    
-    override func tearDown()
-    {
-        super.tearDown();
+    override func setUp() {
+        let bundle = Bundle(for: type(of: self))
+        let path = bundle.path(forResource: "example", ofType: "mp3")!
+        tagParser = TagParser(data: NSData(contentsOfFile: path), tag: ID3Tag());
     }
 
     func test_getTagSize()
     {
-        XCTAssertEqual(whatAYearParser.getTagSize(), 0x110CC);
-        XCTAssertEqual(changesParser.getTagSize(), 0x1AFC8);
+        XCTAssertEqual(tagParser.getTagSize(), 0xA503);
     }
     
     func test_isTagPresent()
     {
-        XCTAssert(whatAYearParser.isTagPresent());
-        XCTAssert(changesParser.isTagPresent());
+        XCTAssert(tagParser.isTagPresent());
     }
 }

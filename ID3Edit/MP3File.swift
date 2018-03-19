@@ -58,7 +58,7 @@ public class MP3File
     public convenience init(path: String, overwrite: Bool = false) throws
     {
         // Check the path extension
-        if (path as NSString).pathExtension.caseInsensitiveCompare("mp3") != NSComparisonResult.OrderedSame
+        if (path as NSString).pathExtension.caseInsensitiveCompare("mp3") != ComparisonResult.orderedSame
         {
             throw ID3EditErrors.NotAnMP3;
         }
@@ -89,7 +89,7 @@ public class MP3File
         {
             tag = ID3Tag();
             parser = TagParser(data: data, tag: tag);
-            
+
             if !overwrite
             {
                 parser.analyzeData();
@@ -174,7 +174,7 @@ public class MP3File
      */
     public func setArtist(artist: String)
     {
-        tag.setArtist(artist);
+        tag.setArtist(artist: artist);
     }
     
     
@@ -185,7 +185,7 @@ public class MP3File
      */
     public func setTitle(title: String)
     {
-        tag.setTitle(title);
+        tag.setTitle(title: title);
     }
     
     
@@ -196,7 +196,7 @@ public class MP3File
      */
     public func setAlbum(album: String)
     {
-        tag.setAlbum(album);
+        tag.setAlbum(album: album);
     }
     
     
@@ -207,7 +207,7 @@ public class MP3File
      */
     public func setLyrics(lyrics: String)
     {
-        tag.setLyrics(lyrics);
+        tag.setLyrics(lyrics: lyrics);
     }
     
     
@@ -221,7 +221,7 @@ public class MP3File
      */
     public func setArtwork(artwork: NSImage, isPNG: Bool)
     {
-        tag.setArtwork(artwork, isPNG: isPNG);
+        tag.setArtwork(artwork: artwork, isPNG: isPNG);
     }
     
     
@@ -246,7 +246,7 @@ public class MP3File
             let newData = try getMP3Data();
             
             // Write the tag to the path
-            if newData.writeToFile(path!, atomically: true)
+            if newData.write(toFile: path!, atomically: true)
             {
                 return true;
             }
@@ -304,7 +304,7 @@ public class MP3File
         
         let musicStartPtr = data!.bytes + tagSize;
         let musicLen = data!.length - tagSize;
-        newData.appendBytes(musicStartPtr, length: musicLen);
+        newData.append(musicStartPtr, length: musicLen);
         
         return newData;
     }

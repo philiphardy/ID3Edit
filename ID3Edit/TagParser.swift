@@ -50,7 +50,13 @@ internal class TagParser
         // Make sure there is at least 4 bytes of data
         if data!.length >= 4
         {
-            version = UnsafePointer<Byte>(data!.bytes)[TagParser.VERSION_OFFSET];
+            version = data?.bytes.assumingMemoryBound(to: Byte.self)[TagParser.VERSION_OFFSET];
+            if (version != 2 && version != 3) {
+                version  = 3
+            }
+            tag.version = version
+        } else {
+            tag.version = 3
         }
     }
     
@@ -68,14 +74,12 @@ internal class TagParser
     internal func isTagPresent() -> Bool
     {
         // Determine if a tag is present
-        let bytes = UnsafePointer<Byte>(data!.bytes);
-        
+        let bytes = data!.bytes.assumingMemoryBound(to: Byte.self);
         var isPresent = false;
         
         for i in 0 ..< 3
         {
-            isPresent = isPresent || (bytes[i] == ID3Tag.FRAMES.V2.HEADER[i] ||
-                                      bytes[i] == ID3Tag.FRAMES.V3.HEADER[i]);
+            isPresent = isPresent || (bytes[i] == ID3Tag.FRAMES.V2.HEADER[i] || bytes[i] == ID3Tag.FRAMES.V3.HEADER[i]);
         }
         
         return isPresent;
@@ -85,11 +89,11 @@ internal class TagParser
     private func isUseful(frame: [Byte]) -> Bool
     {
         // Determine if the frame is useful
-        return isArtistFrame(frame) ||
-               isTitleFrame(frame) ||
-               isAlbumFrame(frame) ||
-               isArtworkFrame(frame) ||
-               isLyricsFrame(frame);
+        return isArtistFrame(frame: frame) ||
+            isTitleFrame(frame: frame) ||
+            isAlbumFrame(frame: frame) ||
+            isArtworkFrame(frame: frame) ||
+            isLyricsFrame(frame: frame);
     }
     
     
@@ -153,8 +157,8 @@ internal class TagParser
     {
         let tagSize = getTagSize();
         // Get the tag
-        let ptr = UnsafePointer<Byte>(data!.bytes) + ID3Tag.TAG_OFFSET;
-        
+        let ptr = data!.bytes.assumingMemoryBound(to: Byte.self) + ID3Tag.TAG_OFFSET;
+
         // Loop through all the frames
         var curPosition = 0;
         while curPosition < tagSize
@@ -166,22 +170,22 @@ internal class TagParser
             if version == 2
             {
                 frameBytes = [bytes[0], bytes[1], bytes[2]];
-                frameSize = getFrameSize(bytes, offset: 2);
+                frameSize = getFrameSize(framePtr: bytes, offset: 2);
             }
             else
             {
                 frameBytes = [bytes[0], bytes[1], bytes[2], bytes[3]];
-                frameSize = getFrameSize(bytes, offset: 4);
+                frameSize = getFrameSize(framePtr: bytes, offset: 4);
             }
             
             
             // Extract info from current frame if needed
-            if isUseful(frameBytes)
+            if isUseful(frame: frameBytes)
             {
-                extractInfo(bytes, frameSize: frameSize, frameBytes: frameBytes);
+                extractInfo(bytes: bytes, frameSize: frameSize, frameBytes: frameBytes);
             }
                 
-            // Check for padding in order to break out
+                // Check for padding in order to break out
             else if frameBytes[0] == 0 && frameBytes[1] == 0 && frameBytes[2] == 0
             {
                 break;
@@ -196,32 +200,32 @@ internal class TagParser
     private func extractInfo(bytes: UnsafePointer<Byte>, frameSize: Int, frameBytes: [Byte])
     {
         let frameOffset = getFrameOffset();
-        if isArtistFrame(frameBytes)
+        if isArtistFrame(frame: frameBytes)
         {
             // Store artist
-            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String;
-            tag!.setArtist(content);
+            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: String.Encoding.ascii.rawValue)! as String;
+            tag!.setArtist(artist: content);
         }
-        else if isTitleFrame(frameBytes)
+        else if isTitleFrame(frame: frameBytes)
         {
             // Store title
-            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String;
-            tag!.setTitle(content);
+            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: String.Encoding.ascii.rawValue)! as String;
+            tag!.setTitle(title: content);
         }
-        else if isAlbumFrame(frameBytes)
+        else if isAlbumFrame(frame: frameBytes)
         {
             // Store album
-            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: NSASCIIStringEncoding) as! String;
-            tag!.setAlbum(content);
+            let content = NSString(bytes: bytes + frameOffset, length: frameSize - frameOffset, encoding: String.Encoding.ascii.rawValue)! as String;
+            tag!.setAlbum(album: content);
         }
-        else if isLyricsFrame(frameBytes)
+        else if isLyricsFrame(frame: frameBytes)
         {
             // Get lyrics
             let LYRICS_OFFSET = frameOffset + 5;
-            let content = NSString(bytes: bytes + LYRICS_OFFSET, length: frameSize - LYRICS_OFFSET, encoding: NSASCIIStringEncoding) as! String;
+            let content = NSString(bytes: bytes + LYRICS_OFFSET, length: frameSize - LYRICS_OFFSET, encoding: String.Encoding.ascii.rawValue)! as String;
             
             // Store the lyrics
-            tag!.setLyrics(content);
+            tag!.setLyrics(lyrics: content);
         }
         else // Artwork
         {
@@ -250,7 +254,7 @@ internal class TagParser
                 ptr += 1;
             }
             let artData = NSData(bytes: ptr, length: frameSize - (ptr - bytes));
-            tag!.setArtwork(artData, isPNG: isPNG);
+            tag!.setArtwork(artwork: artData, isPNG: isPNG);
         }
     }
     
@@ -258,9 +262,11 @@ internal class TagParser
     private func getFrameSize(framePtr: UnsafePointer<Byte>, offset: Int) -> Int
     {
         // Calculate the size of the frame
-        var size = Int(CFSwapInt32HostToBig(UnsafePointer<UInt32>(framePtr + offset).memory));
-        
-        if self.version == 2
+        var size = Int(CFSwapInt32HostToBig(UnsafePointer(framePtr + offset).withMemoryRebound(to: UInt32.self, capacity: 1) {
+            $0.pointee
+        }))
+
+        if(self.version == 2)
         {
             // Extract the first 3 bytes
             size &= 0x00FFFFFF;
@@ -273,8 +279,7 @@ internal class TagParser
     
     internal func getTagSize() -> Int
     {
-        let size = CFSwapInt32HostToBig(UnsafePointer<UInt32>(data!.bytes + TagParser.TAG_SIZE_OFFSET).memory);
-        
+        let size = CFSwapInt32HostToBig((data!.bytes + TagParser.TAG_SIZE_OFFSET).assumingMemoryBound(to: UInt32.self).pointee);
         let b1 = (size & 0x7F000000) >> 3;
         let b2 = (size & 0x007F0000) >> 2;
         let b3 = (size & 0x00007F00) >> 1;
